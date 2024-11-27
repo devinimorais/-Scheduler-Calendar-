@@ -1,33 +1,19 @@
 import React from "react";
-import Background from "../../assets/img/background.jpg";
+import { RiLockPasswordFill, RiUser3Fill, RiMailFill } from "react-icons/ri";
 
 const Login: React.FC = () => {
   return (
     <div
-      className="relative flex items-center justify-center min-h-screen bg-cover bg-center px-4 sm:px-0"
-      style={{ backgroundImage: `url(${Background})` }}
+      className="relative flex items-center justify-center min-h-screen bg-gradient-to-b from-black to-blue-800 px-4 sm:px-0"
     >
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/50"></div>
 
       {/* Login form */}
-      <div className="relative bg-black/25 border border-white backdrop-blur-md p-6 rounded-lg shadow-[0_8px_30px_rgba(0,0,0,0.4)] max-w-sm w-full z-10">
+      <div className="relative bg-white border border-black backdrop-blur-md p-6 rounded-lg shadow-[0_0_15px_rgba(0,0,0,0.8)] max-w-sm w-full z-10">
         <div className="flex justify-center mb-4">
-          <div className="bg-[#313e22] p-4 rounded-full">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-8 w-8 text-white"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
+          <div className="bg-[#0442c5] p-4 rounded-full">
+            <RiUser3Fill className="h-8 w-8 text-white" />
           </div>
         </div>
         <form>
@@ -35,32 +21,19 @@ const Login: React.FC = () => {
           <div className="mb-4">
             <label
               htmlFor="email"
-              className="block text-gray-700 text-sm text-white font-medium mb-2"
+              className="block text-gray-700 text-sm text-[#0442c5] font-medium mb-2"
             >
               Email ID
             </label>
             <div className="flex items-center border border-white rounded-md focus-within:ring-2 focus-within:ring-[#313e22]">
               <div className="p-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M16 12H8m8 0H8m8 0H8M21 12c0 7.732-12 7.732-12 0 0-3.866 4-7 6-7s6 3.134 6 7zm-6-5a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
+                <RiMailFill className="h-6 w-6 text-[#0442c5]" />
               </div>
               <input
                 type="email"
                 id="email"
                 placeholder="Enter your email"
-                className="w-full px-4 py-2 focus:outline-none text-white bg-transparent"
+                className="w-full px-4 py-2 focus:outline-none text-black bg-transparent"
               />
             </div>
           </div>
@@ -69,39 +42,26 @@ const Login: React.FC = () => {
           <div className="mb-4">
             <label
               htmlFor="password"
-              className="block text-gray-700 text-sm text-white font-medium mb-2"
+              className="block text-gray-700 text-sm text-[#0442c5] font-medium mb-2"
             >
               Password
             </label>
             <div className="flex items-center border border-white rounded-md focus-within:ring-2 focus-within:ring-[#313e22]">
               <div className="p-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 17v1m-3 4h6a2 2 0 002-2v-4m4-4h-4V7a4 4 0 00-8 0v4H4m4 0a2 2 0 100 4h8a2 2 0 100-4z"
-                  />
-                </svg>
+                <RiLockPasswordFill className="h-6 w-6 text-[#0442c5]" />
               </div>
               <input
                 type="password"
                 id="password"
                 placeholder="Enter your password"
-                className="w-full px-4 py-2 focus:outline-none text-white bg-transparent"
+                className="w-full px-4 py-2 focus:outline-none text-black bg-transparent"
               />
             </div>
           </div>
 
           {/* Remember me and forgot password */}
           <div className="flex items-center justify-end mb-4">
-            <a href="#" className="text-sm text-white hover:underline">
+            <a href="#" className="text-sm text-[#0442c5] hover:underline">
               Forgot Password?
             </a>
           </div>
@@ -109,7 +69,7 @@ const Login: React.FC = () => {
           {/* Submit button */}
           <button
             type="submit"
-            className="w-full bg-white text-black py-2 px-4 rounded-md hover:bg-green-800 transition-colors"
+            className="w-full bg-[#0442c5] text-white py-2 px-4 rounded-md hover:bg-[#96cafb] transition-colors"
           >
             Login
           </button>
