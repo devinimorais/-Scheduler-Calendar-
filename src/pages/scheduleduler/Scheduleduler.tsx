@@ -43,7 +43,7 @@ const Agendador: React.FC = () => {
                     : prevDate.add(1, "month")
             );
             setIsTransitioning(false);
-        }, 300); // Tempo da transição
+        }, 300); 
     };
 
     const handleDateSelect = (date: Dayjs) => {
@@ -60,13 +60,13 @@ const Agendador: React.FC = () => {
     const calendarDays = generateCalendarDays();
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-200">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-[#212121]">
             <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-5xl flex flex-col lg:flex-row">
                 <div className="lg:w-1/3 w-full flex flex-col items-center lg:items-start justify-center pr-6 border-b lg:border-b-0 lg:border-r border-gray-300 mb-4 lg:mb-0 text-center lg:text-left">
                     <img
                         src={Barber}
                         alt="Logo"
-                        className="mb-4 w-32 lg:w-full" // Reduz a largura da imagem no mobile
+                        className="mb-4 w-32 lg:w-full"
                     />
                 </div>
 
@@ -102,7 +102,6 @@ const Agendador: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* Transição Suave do Calendário */}
                     <div
                         className={`grid grid-cols-7 gap-0 mt-2 mx-auto w-full transition-opacity duration-300 ${isTransitioning ? "opacity-0" : "opacity-100"
                             }`}

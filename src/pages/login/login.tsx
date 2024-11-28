@@ -1,5 +1,4 @@
 import React from "react";
-import { RiUser3Fill } from "react-icons/ri";
 import { FiUser } from "react-icons/fi";
 import { BiSolidLockAlt } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
@@ -13,62 +12,29 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-b from-[#0e069d] to-[#74a8e6] px-4 sm:px-0">
-      <div className="absolute inset-0 bg-black/50"></div>
-
-      <div className="relative bg-transparent p-6 rounded-lg max-w-sm w-full shadow-[0_30px_100px_rgba(0,0,0,0.7)]">
-        <div className="flex justify-center mb-4">
-          <div className="bg-[#0442c5] p-4 rounded-full">
-            <RiUser3Fill className="h-8 w-8 text-white" />
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-[#212121] to-[#212121] px-4 sm:px-0">
+      <div className="relative bg-[#212121] text-white rounded-lg p-8 shadow-[inset_2px_2px_10px_rgba(0,0,0,1),inset_-1px_-1px_5px_rgba(255,255,255,0.6)] max-w-sm w-full">
+        <div className="text-center text-2xl font-bold mb-6">Login</div>
+        <form onSubmit={handleLogin} className="flex flex-col gap-6">
+          <div className="flex items-center bg-[#212121] border border-[#212121] rounded-md shadow-[6px_6px_10px_rgba(0,0,0,1),1px_1px_10px_rgba(255,255,255,0.6)] focus-within:shadow-[inset_2px_2px_10px_rgba(0,0,0,1),inset_-1px_-1px_5px_rgba(255,255,255,0.6)]">
+            <FiUser className="text-white mx-3" size={20} />
+            <input
+              type="text"
+              placeholder="Username"
+              className="w-full h-12 bg-transparent border-none outline-none text-white placeholder-gray-400"
+            />
           </div>
-        </div>
-        <form onSubmit={handleLogin}>
-          <div className="mb-4">
-            <label htmlFor="email" className="block font-medium mb-2 text-white">
-              Username
-            </label>
-            <div className="flex items-center border border-white rounded-xl focus-within:ring-2">
-              <div className="p-2">
-                <FiUser className="h-6 w-6 text-white" />
-              </div>
-              <input
-                type="email"
-                id="email"
-                placeholder="username"
-                className="w-full px-4 py-2 focus:outline-none bg-transparent"
-              />
-            </div>
+          <div className="flex items-center bg-[#212121] border border-[#212121] rounded-md shadow-[6px_6px_10px_rgba(0,0,0,1),1px_1px_10px_rgba(255,255,255,0.6)] focus-within:shadow-[inset_2px_2px_10px_rgba(0,0,0,1),inset_-1px_-1px_5px_rgba(255,255,255,0.6)]">
+            <BiSolidLockAlt className="text-white mx-3" size={20} />
+            <input
+              type="password"
+              placeholder="Password"
+              className="w-full h-12 bg-transparent border-none outline-none text-white placeholder-gray-400"
+            />
           </div>
-
-          <div className="mb-4">
-            <label
-              htmlFor="password"
-              className="block text-white font-medium mb-2"
-            >
-              Password
-            </label>
-            <div className="flex items-center border border-white rounded-xl focus-within:ring-2 focus-within:ring-[#313e22]">
-              <div className="p-2">
-                <BiSolidLockAlt className="h-6 w-6 text-white" />
-              </div>
-              <input
-                type="password"
-                id="password"
-                placeholder="password"
-                className="w-full px-4 py-2 focus:outline-none bg-transparent"
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center justify-end mb-4">
-            <a href="#" className="text-sm text-white hover:underline">
-              Forgot Password?
-            </a>
-          </div>
-
           <button
             type="submit"
-            className="w-full text-white py-2 px-6 rounded-[20px] bg-gradient-to-r from-[#0400ff] to-[#4ce3f7] bg-[length:100%_auto] transition-all duration-500 ease-in-out hover:bg-[length:200%_auto] hover:bg-right focus:outline-none shadow-lg animate-pulse512"
+            className="w-full py-2 bg-[#212121] border border-[#212121] rounded-md text-white font-semibold shadow-[6px_6px_10px_rgba(0,0,0,1),1px_1px_10px_rgba(255,255,255,0.6)] hover:scale-105 focus:shadow-[inset_2px_2px_10px_rgba(0,0,0,1),inset_-1px_-1px_5px_rgba(255,255,255,0.6)]"
           >
             Login
           </button>
