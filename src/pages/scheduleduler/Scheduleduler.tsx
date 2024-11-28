@@ -2,22 +2,21 @@ import React, { useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import weekday from "dayjs/plugin/weekday";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
-import "dayjs/locale/pt-br"; // Importando o idioma português
+import "dayjs/locale/pt-br";
 import Barber from "../../assets/img/barber.png";
 
-// Extensões para manipulação de datas
 dayjs.extend(weekday);
 dayjs.extend(isSameOrBefore);
 dayjs.locale("pt-br");
 
 const Agendador: React.FC = () => {
-    const [currentDate, setCurrentDate] = useState<Dayjs>(dayjs()); // Data atual
-    const [selectedDate, setSelectedDate] = useState<string>(""); // Estado inicial como string vazia
+    const [currentDate, setCurrentDate] = useState<Dayjs>(dayjs());
+    const [selectedDate, setSelectedDate] = useState<string>("");
     const [showModal, setShowModal] = useState<boolean>(false);
+    const [isTransitioning, setIsTransitioning] = useState(false);
 
-    const times = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"]; // Horários
+    const times = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"];
 
-    // Gera os dias do mês para o calendário
     const generateCalendarDays = (): Dayjs[] => {
         const startOfMonth = currentDate.startOf("month").startOf("week");
         const endOfMonth = currentDate.endOf("month").endOf("week");
@@ -32,12 +31,19 @@ const Agendador: React.FC = () => {
         return days;
     };
 
-    const handlePrevMonth = () => {
-        setCurrentDate(currentDate.subtract(1, "month"));
-    };
+    const handleMonthChange = (direction: "prev" | "next") => {
+        if (isTransitioning) return;
 
-    const handleNextMonth = () => {
-        setCurrentDate(currentDate.add(1, "month"));
+        setIsTransitioning(true);
+
+        setTimeout(() => {
+            setCurrentDate((prevDate) =>
+                direction === "prev"
+                    ? prevDate.subtract(1, "month")
+                    : prevDate.add(1, "month")
+            );
+            setIsTransitioning(false);
+        }, 300); // Tempo da transição
     };
 
     const handleDateSelect = (date: Dayjs) => {
@@ -56,34 +62,39 @@ const Agendador: React.FC = () => {
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-200">
             <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-5xl flex flex-col lg:flex-row">
-                {/* Coluna Esquerda */}
                 <div className="lg:w-1/3 w-full flex flex-col items-center lg:items-start justify-center pr-6 border-b lg:border-b-0 lg:border-r border-gray-300 mb-4 lg:mb-0 text-center lg:text-left">
                     <img
                         src={Barber}
                         alt="Logo"
-                        className="mb-4"
+                        className="mb-4 w-32 lg:w-full" // Reduz a largura da imagem no mobile
                     />
                 </div>
 
-                {/* Coluna Direita */}
-                <div className="lg:w-2/3 w-full lg:pl-6">
-                    {/* Cabeçalho do Calendário */}
-                    <div className="flex flex-col mb-4">
-                        <h2 className="text-lg font-bold text-gray-800">Escolha uma data</h2>
-                        <div className="flex justify-between items-center mt-2">
-                            <p className="text-gray-600 text-sm">
-                                {currentDate.format("MMMM YYYY")}
+                <div className="lg:w-2/3 w-full lg:pl-6 ">
+                    <div className="flex flex-col mb-4 ">
+                        <div className="text-center">
+                            <h2 className="text-2xl font-extrabold text-[#3F6262]  tracking-wide mb-2">
+                                AGENDE O SEU HORÁRIO
+                            </h2>
+                            <div className="w-22 h-1 bg-[#3F6262] mx-auto"></div>
+                        </div>
+
+
+                        <div className="flex justify-between items-center mt-10">
+                            <p className="text-[#3F6262] text-xl">
+                                {currentDate.format("MMMM YYYY").charAt(0).toUpperCase() + currentDate.format("MMMM , YYYY").slice(1)}
                             </p>
+
                             <div className="flex items-center gap-4">
                                 <button
-                                    className="text-teal-500 hover:text-teal-600"
-                                    onClick={handlePrevMonth}
+                                    className="text-teal-500 hover:text-teal-600 text-2xl px-4 py-2 rounded-full bg-teal-100 hover:bg-teal-200 transition-all duration-200"
+                                    onClick={() => handleMonthChange("prev")}
                                 >
                                     &lt;
                                 </button>
                                 <button
-                                    className="text-teal-500 hover:text-teal-600"
-                                    onClick={handleNextMonth}
+                                    className="text-teal-500 hover:text-teal-600 text-2xl px-4 py-2 rounded-full bg-teal-100 hover:bg-teal-200 transition-all duration-200"
+                                    onClick={() => handleMonthChange("next")}
                                 >
                                     &gt;
                                 </button>
@@ -91,35 +102,22 @@ const Agendador: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* Cabeçalho dos dias da semana */}
-                    <div className="grid grid-cols-7 border-b border-gray-300 mx-auto w-full">
-                        {daysOfWeek.map((day, index) => (
-                            <div
-                                key={day}
-                                className={`h-12 flex justify-center items-center text-sm font-bold text-gray-700 uppercase ${
-                                    index !== daysOfWeek.length - 1 ? "border-r border-gray-300" : ""
-                                } px-2`}
-                            >
-                                {day}
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Calendário */}
-                    <div className="grid grid-cols-7 gap-0 mt-2 mx-auto w-full">
+                    {/* Transição Suave do Calendário */}
+                    <div
+                        className={`grid grid-cols-7 gap-0 mt-2 mx-auto w-full transition-opacity duration-300 ${isTransitioning ? "opacity-0" : "opacity-100"
+                            }`}
+                    >
                         {calendarDays.map((day, index) => (
                             <div
                                 key={`${day.toString()}-${index}`}
-                                className={`relative h-12 flex justify-center items-center border-b border-gray-300 ${
-                                    index % 7 !== 6 ? "border-r border-gray-300" : ""
-                                }`}
+                                className={`relative h-12 flex justify-center items-center border-b border-gray-300 ${index % 7 !== 6 ? "border-r border-gray-300" : ""
+                                    }`}
                             >
                                 <button
-                                    className={`h-10 w-10 flex justify-center items-center rounded-full text-sm ${
-                                        day.isSame(currentDate, "month")
-                                            ? "bg-black text-white hover:bg-teal-600"
-                                            : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                                    }`}
+                                    className={`h-10 w-10 flex justify-center items-center rounded-full text-xl ${day.isSame(currentDate, "month")
+                                        ? "bg-[#E3F5F5] text-[#3F6262] hover:bg-[#00BFFF]"
+                                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                        }`}
                                     onClick={() =>
                                         day.isSame(currentDate, "month") && handleDateSelect(day)
                                     }
@@ -133,7 +131,6 @@ const Agendador: React.FC = () => {
                 </div>
             </div>
 
-            {/* Modal */}
             {showModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
                     <div className="bg-white rounded-lg p-6 w-96">
