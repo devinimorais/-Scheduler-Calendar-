@@ -1,14 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { useNavigate } from 'react-router-dom';
 import weekday from "dayjs/plugin/weekday";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import Team from "../../assets/img/Team1.jpg";
 import "dayjs/locale/pt-br";
+import axios from "axios";
+import { fetchAppointmentById } from "../../api/appointments";
 
 dayjs.extend(weekday);
 dayjs.extend(isSameOrBefore);
 dayjs.locale("pt-br");
+
+type Appointment = {
+    id: number;
+    scheduledDate: string;
+    description: string;
+    status: string;
+    userId: number;
+    ticketId: number;
+    createdAt: string;
+    updatedAt: string;
+};
+
+
 
 const Agendador: React.FC = () => {
     const [currentDate, setCurrentDate] = useState<Dayjs>(dayjs());
@@ -18,7 +33,7 @@ const Agendador: React.FC = () => {
     const [isTransitioning, setIsTransitioning] = useState(false);
 
     const times = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"];
-    const navigate = useNavigate(); // Inicializa o hook useNavigate
+    const navigate = useNavigate();
     const generateCalendarDays = (): Dayjs[] => {
         const navigate = useNavigate();
         const startOfMonth = currentDate.startOf("month").startOf("week");
@@ -51,7 +66,7 @@ const Agendador: React.FC = () => {
 
     const handleDateSelect = (date: Dayjs) => {
         setSelectedDate(date.format("DD/MM/YYYY"));
-        setSelectedTime(""); // Limpa o horário selecionado
+        setSelectedTime("");
         setShowModal(true);
     };
 
@@ -65,6 +80,54 @@ const Agendador: React.FC = () => {
         setSelectedTime("");
     };
 
+    const api = axios.create({
+        baseURL: '(link unavailable)',
+    });
+
+    const [appointment, setAppointment] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const getDetails = async () => {
+        setLoading(true);
+        try {
+            const data = await fetchAppointmentById(appointment);
+            setAppointment(data);
+        } catch (error) {
+            console.error("Erro ao buscar detalhes do agendamento:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const [appointments, setAppointments] = useState<Appointment[]>([]);
+
+    useEffect(() => {
+        const fetchMockAppointments = async () => {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            const mockData: Appointment[] = [
+                {
+                    id: 1,
+                    scheduledDate: "2024-11-28T14:00:00.000Z",
+                    description: "Agendamento de reunião",
+                    status: "pending",
+                    userId: 3,
+                    ticketId: 12,
+                    createdAt: "2024-11-27T10:00:00.000Z",
+                    updatedAt: "2024-11-27T10:00:00.000Z",
+                },
+            ];
+
+            setAppointments(mockData);
+        };
+
+        fetchMockAppointments();
+    }, []);
+
+
+
+
+
     const daysOfWeek = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
     const calendarDays = generateCalendarDays();
 
@@ -72,7 +135,7 @@ const Agendador: React.FC = () => {
         <div
             className="relative flex flex-col items-center justify-center min-h-screen bg-gray-200"
         >
-            {/* Modal */}
+
             {showModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
                     <div className="bg-white p-6 rounded-lg shadow-lg text-center w-full max-w-md mx-4">
@@ -99,15 +162,22 @@ const Agendador: React.FC = () => {
                                 Horário selecionado: {selectedTime}
                             </p>
                         )}
-                        <button
-                            onClick={closeModal}
-                            className="bg-[#1a3339] text-white px-4 py-2 rounded-lg hover:bg-[#0f2a2d] transition-all duration-200"
-                        >
-                            Confirmar
-                        </button>
+                        <div className="flex justify-between gap-4">
+                            <button
+                                onClick={closeModal}
+                                className="bg-[#1a3339] text-white px-4 py-2 rounded-lg hover:bg-[#0f2a2d] transition-all duration-200 w-full"
+                            >
+                                Confirmar
+                            </button>
+                            <button
+                                onClick={closeModal}
+                                className="bg-gray-300 text-black px-4 py-2 rounded-lg hover:bg-gray-400 transition-all duration-200 w-full"
+                            >
+                                Cancelar
+                            </button>
+                        </div>
                     </div>
                 </div>
-
             )}
 
             <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-5xl flex flex-col lg:flex-row backdrop-blur-sm">
@@ -116,7 +186,7 @@ const Agendador: React.FC = () => {
                 >
                     <button
                         className="absolute top-4 left-4 bg-gray-200 rounded-full p-2 shadow-md"
-                        onClick={() => navigate('/')} // Redireciona para a página de login
+                        onClick={() => navigate('/')}
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"

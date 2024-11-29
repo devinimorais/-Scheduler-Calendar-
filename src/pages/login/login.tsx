@@ -7,38 +7,63 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault(); // Previne o comportamento padrão de envio do formulário
-    navigate("/Scheduledule"); // Redireciona para a rota "/Scheduledule"
+    e.preventDefault();
+    navigate("/Scheduledule");
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-[#212121] to-[#212121] px-4 sm:px-0">
-      <div className="relative bg-[#212121] text-white rounded-lg p-8 shadow-[inset_2px_2px_10px_rgba(0,0,0,1),inset_-1px_-1px_5px_rgba(255,255,255,0.6)] max-w-sm w-full">
-        <div className="text-center text-2xl font-bold mb-6">Login</div>
-        <form onSubmit={handleLogin} className="flex flex-col gap-6">
-          <div className="flex items-center bg-[#212121] border border-[#212121] rounded-md shadow-[6px_6px_10px_rgba(0,0,0,1),1px_1px_10px_rgba(255,255,255,0.6)] focus-within:shadow-[inset_2px_2px_10px_rgba(0,0,0,1),inset_-1px_-1px_5px_rgba(255,255,255,0.6)]">
-            <FiUser className="text-white mx-3" size={20} />
+    <div className="flex justify-center items-center min-h-screen bg-gray-200">
+      <div className="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
+        <h1 className="text-2xl font-bold text-center mb-6">Login</h1>
+        <form>
+          <div className="mb-4">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
             <input
-              type="text"
-              placeholder="Username"
-              className="w-full h-12 bg-transparent border-none outline-none text-white placeholder-gray-400"
+              type="email"
+              id="email"
+              className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Email"
             />
           </div>
-          <div className="flex items-center bg-[#212121] border border-[#212121] rounded-md shadow-[6px_6px_10px_rgba(0,0,0,1),1px_1px_10px_rgba(255,255,255,0.6)] focus-within:shadow-[inset_2px_2px_10px_rgba(0,0,0,1),inset_-1px_-1px_5px_rgba(255,255,255,0.6)]">
-            <BiSolidLockAlt className="text-white mx-3" size={20} />
+          <div className="mb-4">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
             <input
               type="password"
+              id="password"
+              className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Password"
-              className="w-full h-12 bg-transparent border-none outline-none text-white placeholder-gray-400"
             />
           </div>
           <button
             type="submit"
-            className="w-full py-2 bg-[#212121] border border-[#212121] rounded-md text-white font-semibold shadow-[6px_6px_10px_rgba(0,0,0,1),1px_1px_10px_rgba(255,255,255,0.6)] hover:scale-105 focus:shadow-[inset_2px_2px_10px_rgba(0,0,0,1),inset_-1px_-1px_5px_rgba(255,255,255,0.6)]"
+            className="w-full py-2 px-4 bg-gradient-to-r from-slate-800-500 bg-slate-500 font-semibold rounded-md hover:opacity-90 text-gray-200"
           >
             Login
           </button>
         </form>
+        <div className="text-center mt-4">
+          <a
+            href="#"
+            className="text-sm text-blue-500 hover:underline"
+          >
+            Forgot Password?
+          </a>
+        </div>
+        <div className="text-center mt-2">
+          <p className="text-sm">
+            Don’t have an account?{' '}
+            <a
+              href="#"
+              className="text-blue-500 font-semibold hover:underline"
+            >
+              Sign up
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );
