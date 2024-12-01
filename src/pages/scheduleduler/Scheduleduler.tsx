@@ -134,8 +134,8 @@ const Scheduler = () => {
 
       {/* Conteúdo principal */}
       <div className="p-8 mt-16">
-        <h1 className="text-center text-3xl font-bold text-[#134647] mb-6 underline decoration-green-400 decoration-4">
-          Escolha uma opção
+        <h1 className="text-center text-3xl font-bold text-black mb-6 underline decoration-gray-400 decoration-4">
+          Escolha um dos nossos serviços
         </h1>
         <div className="flex flex-col lg:flex-row lg:justify-between items-center mb-8">
           <h2 className="hidden lg:block text-xl font-medium">
@@ -172,7 +172,7 @@ const Scheduler = () => {
               className="border rounded-md shadow-md p-4 bg-white flex flex-col justify-between"
             >
               <div className="flex items-center mb-4">
-                <div className="w-14 h-14 bg-[#134647] text-white rounded-full flex items-center justify-center text-xl">
+                <div className="w-14 h-14 bg-black text-white rounded-full flex items-center justify-center text-xl">
                   <i className={service.icon}></i>
                 </div>
                 <div className="ml-4">
@@ -185,7 +185,7 @@ const Scheduler = () => {
                 <p>Preço: {service.price}</p>
                 <p className="mt-2">{service.description}</p>
               </div>
-              <button className="flex items-center justify-center gap-2 w-full bg-[#134647] text-white py-2 rounded-md font-medium hover:bg-[#0c7e7e] transition">
+              <button className="flex items-center justify-center gap-2 w-full bg-black text-white py-2 rounded-md font-medium hover:bg-gray-400 transition">
                 <i className="fas fa-calendar-check"></i> RESERVAR
               </button>
             </div>
