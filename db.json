@@ -70,6 +70,57 @@
       "duration": 60,
       "professionalId": 3
     }
-   
+  ],
+  "reservations": [
+    {
+      "id": 1,
+      "serviceId": 1,
+      "date": "2024-12-01",
+      "time": "09:00",
+      "email": "alice.santos@cliente.com"
+    },
+    {
+      "id": 2,
+      "serviceId": 2,
+      "date": "2024-12-01",
+      "time": "10:00",
+      "email": "bruno.costa@cliente.com"
+    },
+    {
+      "id": 3,
+      "serviceId": 3,
+      "date": "2024-12-02",
+      "time": "13:00",
+      "email": "carla.nunes@cliente.com"
+    },
+    {
+      "id": 4,
+      "serviceId": 1,
+      "date": "2024-12-01",
+      "time": "11:00",
+      "email": "diego.alves@cliente.com"
+    }
+  ],
+  "customers": [
+    {
+      "id": 1,
+      "name": "Alice Santos",
+      "email": "alice.santos@cliente.com"
+    },
+    {
+      "id": 2,
+      "name": "Bruno Costa",
+      "email": "bruno.costa@cliente.com"
+    },
+    {
+      "id": 3,
+      "name": "Carla Nunes",
+      "email": "carla.nunes@cliente.com"
+    },
+    {
+      "id": 4,
+      "name": "Diego Alves",
+      "email": "diego.alves@cliente.com"
+    }
   ]
 }
