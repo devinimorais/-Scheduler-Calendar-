@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import Navbar from "../../components/Navbar"; // Certifique-se de ajustar o caminho para o seu componente Navbar
-
+import Navbar from "../../components/Navbar";
 const Scheduler = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -139,7 +138,7 @@ const Scheduler = () => {
         </h1>
         <div className="flex flex-col lg:flex-row lg:justify-between items-center mb-8">
           <h2 className="hidden lg:block text-xl font-medium">
-          
+
           </h2>
           <div className="relative w-full lg:w-1/5">
             <input
