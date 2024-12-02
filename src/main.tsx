@@ -11,7 +11,7 @@ import Home from "./pages/home/Home";
 // Criação do roteador
 const router = createBrowserRouter([
   {
-    path: "/login", // Página inicial (Login)
+    path: "/", // Página inicial (Login)
     element: <Login />
   },
   {
