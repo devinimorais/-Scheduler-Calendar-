@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const menuItems = [
     { name: "Início", path: "/home" },
     { name: "Serviços", path: "/services" },
     { name: "Profissionais", path: "/professionals" },
+    { name: "Login", path: "/login" },
   ];
 
   const handleNavigation = (path: string) => {
@@ -16,20 +18,52 @@ const Navbar: React.FC = () => {
     setIsMenuOpen(false);
   };
 
+  const isHomePage = location.pathname === "/home";
+
   return (
-    <nav className="bg-white shadow-md fixed top-0 left-0 w-full z-20">
+    <nav
+      className={`fixed top-0 left-0 w-full z-50 ${
+        isHomePage
+          ? "bg-transparent text-white"
+          : "bg-white text-black shadow-md"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div
             onClick={() => handleNavigation("/home")}
-            className="flex-shrink-0 text-lg md:text-xl lg:text-2xl font-bold text-black cursor-pointer"
+            className="flex-shrink-0 text-lg md:text-xl lg:text-2xl font-bold cursor-pointer"
           >
             Agendador
+          </div>
+          <div className="hidden md:flex space-x-6">
+            {menuItems.map((item) => (
+              <button
+                key={item.name}
+                onClick={() => handleNavigation(item.path)}
+                className={`relative px-4 py-2 font-medium ${
+                  isHomePage
+                    ? "text-white hover:text-yellow-300"
+                    : "text-black hover:text-black"
+                } group`}
+              >
+                {item.name}
+                <span
+                  className={`absolute bottom-0 left-1/2 w-0 h-1 ${
+                    isHomePage ? "bg-yellow-300" : "bg-black"
+                  } transition-all duration-300 group-hover:left-0 group-hover:w-full`}
+                ></span>
+              </button>
+            ))}
           </div>
           <div className="block md:hidden">
             <button
               type="button"
-              className="text-gray-600 hover:text-gray-800 focus:outline-none"
+              className={`focus:outline-none ${
+                isHomePage
+                  ? "text-white hover:text-yellow-300"
+                  : "text-black hover:text-blue-500"
+              }`}
               aria-expanded={isMenuOpen ? "true" : "false"}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
@@ -58,26 +92,19 @@ const Navbar: React.FC = () => {
               </svg>
             </button>
           </div>
-          <div className="hidden md:flex space-x-6">
-            {menuItems.map((item) => (
-              <button
-                key={item.name}
-                onClick={() => handleNavigation(item.path)}
-                className="px-4 py-2 font-medium text-gray-500 hover:text-gray-800"
-              >
-                {item.name}
-              </button>
-            ))}
-          </div>
         </div>
       </div>
       {isMenuOpen && (
         <div
-          className={`fixed inset-0 bg-gray-800 bg-opacity-50 z-10 transition-transform duration-300 md:hidden`}
+          className={`fixed inset-0 ${
+            isHomePage ? "bg-black bg-opacity-50" : "bg-gray-800 bg-opacity-50"
+          } z-40 transition-transform duration-300 md:hidden`}
           onClick={() => setIsMenuOpen(false)}
         >
           <div
-            className={`fixed top-0 right-0 h-full bg-white w-64 p-6 shadow-lg transform transition-transform duration-300 ${
+            className={`fixed top-0 right-0 h-full ${
+              isHomePage ? "bg-black text-white" : "bg-white text-black"
+            } w-64 p-6 transform transition-transform duration-300 ${
               isMenuOpen ? "translate-x-0" : "translate-x-full"
             }`}
           >
@@ -86,9 +113,18 @@ const Navbar: React.FC = () => {
                 <button
                   key={item.name}
                   onClick={() => handleNavigation(item.path)}
-                  className="text-lg text-gray-800 hover:text-gray-500"
+                  className={`relative text-lg ${
+                    isHomePage
+                      ? "text-white hover:text-yellow-300"
+                      : "text-black hover:text-blue-500"
+                  } group`}
                 >
                   {item.name}
+                  <span
+                    className={`absolute bottom-0 left-1/2 w-0 h-1 ${
+                      isHomePage ? "bg-yellow-300" : "bg-blue-500"
+                    } transition-all duration-300 group-hover:left-0 group-hover:w-full`}
+                  ></span>
                 </button>
               ))}
             </div>

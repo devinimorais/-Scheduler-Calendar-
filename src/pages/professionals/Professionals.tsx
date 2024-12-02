@@ -81,7 +81,7 @@ const Professionals: React.FC = () => {
                 <p className="text-sm text-gray-400 mb-2">
                   Email: {professional.email}
                 </p>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-green-300">
                   Empresa ID: {professional.companyId}
                 </p>
                 <hr className="w-3/4 border-gray-600 my-4" />

@@ -21,17 +21,19 @@ const Home: React.FC = () => {
       <Navbar />
       <div className="relative flex flex-col items-center justify-center text-center h-screen">
         <h1 className="text-5xl font-extrabold mb-4">
-          Experimente o <span className="text-gray-300 underline">Melhor Serviço</span> Sob Medida
+          <span className="text-yellow-300 underline">Reserve</span> o Serviço Perfeito <br />
+          com Apenas Alguns Cliques!
         </h1>
-        <p className="text-lg text-gray-300 mb-8">
-          Profissionalismo, qualidade e dedicação. Descubra tudo o que temos a oferecer.
+        <p className="text-lg text-white mb-8">
+          Praticidade, qualidade e confiança. Simplifique sua vida com nossos serviços sob medida.
         </p>
         <button
           onClick={handleNavigateToServices}
-          className="px-6 py-3 bg-white text-black font-bold rounded-full shadow-md hover:bg-gray-300 transition"
+          className="px-8 py-4 bg-yellow-300 text-black text-xl font-bold rounded-full shadow-lg hover:bg-[#9c7250] transition"
         >
-          Veja Nossos Serviços
+          Acesse os nossos serviços!
         </button>
+
       </div>
     </div>
   );

@@ -23,7 +23,7 @@ const Login: React.FC = () => {
             <input
               type="email"
               id="email"
-              className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
               placeholder="Email"
             />
           </div>
@@ -34,13 +34,13 @@ const Login: React.FC = () => {
             <input
               type="password"
               id="password"
-              className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
               placeholder="Password"
             />
           </div>
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-gradient-to-r from-slate-800-500 bg-slate-500 font-semibold rounded-md hover:opacity-90 text-gray-200"
+            className="w-full py-2 px-4 bg-black font-semibold rounded-md hover:opacity-90 text-white"
           >
             Login
           </button>

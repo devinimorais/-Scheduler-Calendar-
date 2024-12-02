@@ -98,7 +98,7 @@ const Services = () => {
                 <p className="text-sm text-gray-400 mb-2">
                   Duração: {service.duration} min
                 </p>
-                <p className="text-lg font-bold text-gray-100 mb-4">
+                <p className="text-lg font-bold text-green-300 mb-4">
                   R$ {service.price}
                 </p>
                 <hr className="w-3/4 border-gray-600 mb-4" />
