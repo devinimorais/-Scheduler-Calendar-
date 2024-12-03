@@ -342,12 +342,11 @@ const Services = () => {
                     <button
                       key={day}
                       onClick={() => handleDateSelection(day)}
-                      className={`w-full h-10 rounded-full ${
-                        selectedDate ===
-                        `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+                      className={`w-full h-10 rounded-full ${selectedDate ===
+                          `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
                           ? "bg-purple-500 text-white"
                           : "bg-gray-100 text-gray-700"
-                      } hover:bg-purple-200`}
+                        } hover:bg-purple-200`}
                     >
                       {day}
                     </button>
@@ -364,13 +363,12 @@ const Services = () => {
                         onClick={() =>
                           slot.available && setSelectedTimeSlot(slot.time)
                         }
-                        className={`p-2 rounded-md mb-2 cursor-pointer ${
-                          slot.available
+                        className={`p-2 rounded-md mb-2 cursor-pointer ${slot.available
                             ? selectedTimeSlot === slot.time
                               ? "bg-green-500 text-white"
                               : "bg-green-100 text-green-700"
                             : "bg-red-100 text-red-700 cursor-not-allowed"
-                        }`}
+                          }`}
                       >
                         {slot.time} {slot.available ? "" : "(Indisponível)"}
                       </li>
@@ -391,11 +389,10 @@ const Services = () => {
               <button
                 onClick={handleConfirm}
                 disabled={isConfirmButtonDisabled}
-                className={`px-4 py-2 rounded-md text-white ${
-                  isConfirmButtonDisabled
+                className={`px-4 py-2 rounded-md text-white ${isConfirmButtonDisabled
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-blue-500 hover:bg-blue-600"
-                }`}
+                  }`}
               >
                 Confirmar
               </button>
@@ -404,48 +401,7 @@ const Services = () => {
         </div>
       )}
 
-      <div className="p-6 lg:p-8">
-        <h2 className="text-xl font-bold mb-4">Cancelar Reserva</h2>
-        <input
-          type="email"
-          placeholder="Digite seu email"
-          className="w-full p-3 border border-gray-300 rounded-md shadow-md focus:ring-2 focus:ring-teal-500 mb-4"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <button
-          onClick={handleSearchReservationsByEmail}
-          className="px-4 py-2 bg-gray-300 rounded-md shadow-md hover:bg-gray-400"
-        >
-          Buscar Reservas
-        </button>
-        {reservationsByEmail.length > 0 && (
-          <div className="mt-4">
-            <h3 className="text-lg font-semibold mb-4">Suas Reservas</h3>
-            {reservationsByEmail.map((reservation) => (
-              <div
-                key={reservation.id}
-                className={`p-4 rounded-lg border mb-4 cursor-pointer ${
-                  reservationToDelete?.id === reservation.id
-                    ? "bg-red-200 border-red-500"
-                    : "bg-white border-gray-300"
-                }`}
-                onClick={() => setReservationToDelete(reservation)}
-              >
-                <p>Data: {reservation.date}</p>
-                <p>Horário: {reservation.time}</p>
-                <p>Serviço ID: {reservation.serviceId}</p>
-              </div>
-            ))}
-            <button
-              onClick={handleDeleteReservation}
-              className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-            >
-              Cancelar Reserva Selecionada
-            </button>
-          </div>
-        )}
-      </div>
+
     </div>
   );
 };

@@ -7,6 +7,7 @@ import Scheduleduler from "./pages/scheduleduler/Scheduleduler";
 import Services from "./pages/servicess/Services";
 import Professionals from "./pages/professionals/Professionals";
 import Home from "./pages/home/Home";
+import BookTime from "./pages/BookTimes/Book times";
 
 // Criação do roteador
 const router = createBrowserRouter([
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
   {
     path: "/professionals", // Página de Profissionais
     element: <Professionals />
+  },
+  {
+    path: "/bookTime", // Página de reserva de horário
+    element: <BookTime />
   }
 ]);
 

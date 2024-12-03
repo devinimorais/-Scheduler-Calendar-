@@ -99,6 +99,13 @@
       "date": "2024-12-01",
       "time": "11:00",
       "email": "diego.alves@cliente.com"
+    },
+    {
+      "id": "e4c4",
+      "serviceId": 2,
+      "date": "2024-12-07",
+      "time": "09:00",
+      "email": "vinicius@gmail.com"
     }
   ],
   "customers": [
