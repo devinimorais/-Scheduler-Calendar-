@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
+import axios from "axios";
 
 type Professional = {
   id: number;
@@ -19,12 +20,14 @@ const Professionals: React.FC = () => {
   useEffect(() => {
     const fetchProfessionals = async () => {
       try {
-        const response = await fetch("http://localhost:3001/professionals");
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const data: Professional[] = await response.json();
-        setProfessionals(data);
+        const { data } = await axios.post("https://api.tzsexpertacademy.com/bypass/", {
+
+          "url": "https://api.tzsexpertacademy.com/users/professional",
+          "method": "GET"
+
+        });
+
+        setProfessionals(data.data);
       } catch (err) {
         setError((err as Error).message);
       } finally {
@@ -66,29 +69,18 @@ const Professionals: React.FC = () => {
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {professionals.map((professional) => (
+          {professionals?.map((professional) => (
             <div
-              key={professional.id}
+              key={professional?.id}
               className="bg-black text-white rounded-xl shadow-lg p-6 flex flex-col justify-between border border-gray-700 hover:border-gray-500 transition duration-300"
             >
               <div className="flex flex-col items-center">
                 <h3 className="font-semibold text-lg mb-2 text-center uppercase tracking-wide">
-                  {professional.name}
+                  {professional?.name}
                 </h3>
                 <p className="text-sm text-gray-400 mb-2">
-                  Profissão: {professional.profession}
+                  {professional?.profession}
                 </p>
-                <p className="text-sm text-gray-400 mb-2">
-                  Email: {professional.email}
-                </p>
-                <p className="text-sm text-green-300">
-                  Empresa ID: {professional.companyId}
-                </p>
-                <hr className="w-3/4 border-gray-600 my-4" />
-                <div className="text-xs text-gray-400 text-center">
-                  <p>Criado em: {new Date(professional.createdAt).toLocaleDateString()}</p>
-                  <p>Atualizado em: {new Date(professional.updatedAt).toLocaleDateString()}</p>
-                </div>
               </div>
               <button className="mt-6 w-full py-3 rounded-full bg-white text-black font-semibold shadow-sm hover:shadow-md transition hover:bg-gray-300">
                 Saiba Mais

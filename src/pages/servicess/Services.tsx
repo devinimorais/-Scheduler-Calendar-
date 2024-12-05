@@ -3,6 +3,7 @@ import Navbar from "../../components/Navbar";
 import { FaCaretSquareRight, FaCaretSquareLeft } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 type Service = {
   id: number;
@@ -42,15 +43,19 @@ const Services = () => {
   const [reservationsByEmail, setReservationsByEmail] = useState<Reservation[]>([]);
   const [reservationToDelete, setReservationToDelete] = useState<Reservation | null>(null);
 
+
+
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await fetch("http://localhost:3001/services");
-        if (!response.ok) {
-          throw new Error("Erro ao carregar os serviços");
-        }
-        const data: Service[] = await response.json();
-        setServices(data);
+        const { data } = await axios.post("https://api.tzsexpertacademy.com/bypass/", {
+
+          "url": "https://api.tzsexpertacademy.com/service",
+          "method": "GET"
+
+        });
+
+        setServices(data.data);
       } catch (err) {
         setError((err as Error).message);
       } finally {
@@ -226,6 +231,11 @@ const Services = () => {
     "Dezembro",
   ];
 
+
+
+
+
+
   const isConfirmButtonDisabled = !email || !selectedDate || !selectedTimeSlot;
 
   if (loading) {
@@ -243,6 +253,8 @@ const Services = () => {
       </div>
     );
   }
+
+
 
   return (
     <div className="relative">
@@ -274,29 +286,32 @@ const Services = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredServices.map((service) => (
+          {filteredServices?.map((service) => (
             <div
-              key={service.id}
+              key={service?.id}
               className="bg-black text-white rounded-xl shadow-lg p-6 flex flex-col justify-between border border-gray-700 hover:border-gray-500 transition duration-300"
             >
               <div className="flex flex-col items-center">
                 <h3 className="font-semibold text-lg mb-2 text-center uppercase tracking-wide">
-                  {service.name}
+                  {service?.name}
                 </h3>
                 <p className="text-sm text-gray-400 mb-2">
-                  Duração: {service.duration} min
+                  Duração: {service?.duration} min
                 </p>
                 <p className="text-lg font-bold text-green-300 mb-4">
-                  R$ {service.price}
+                  R$ {service?.price}
                 </p>
                 <hr className="w-3/4 border-gray-600 mb-4" />
                 <p className="text-sm text-gray-300 text-center">
-                  {service.description}
+                  {service?.description}
                 </p>
               </div>
               <button
                 className="mt-6 w-full py-3 rounded-full bg-white text-black font-semibold shadow-sm hover:shadow-md transition hover:bg-gray-300"
-                onClick={() => setSelectedService(service)}
+                onClick={() => setSelectedService(service)
+
+                }
+
               >
                 Reservar
               </button>
@@ -343,9 +358,9 @@ const Services = () => {
                       key={day}
                       onClick={() => handleDateSelection(day)}
                       className={`w-full h-10 rounded-full ${selectedDate ===
-                          `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
-                          ? "bg-purple-500 text-white"
-                          : "bg-gray-100 text-gray-700"
+                        `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+                        ? "bg-purple-500 text-white"
+                        : "bg-gray-100 text-gray-700"
                         } hover:bg-purple-200`}
                     >
                       {day}
@@ -364,10 +379,10 @@ const Services = () => {
                           slot.available && setSelectedTimeSlot(slot.time)
                         }
                         className={`p-2 rounded-md mb-2 cursor-pointer ${slot.available
-                            ? selectedTimeSlot === slot.time
-                              ? "bg-green-500 text-white"
-                              : "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700 cursor-not-allowed"
+                          ? selectedTimeSlot === slot.time
+                            ? "bg-green-500 text-white"
+                            : "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700 cursor-not-allowed"
                           }`}
                       >
                         {slot.time} {slot.available ? "" : "(Indisponível)"}
@@ -390,8 +405,8 @@ const Services = () => {
                 onClick={handleConfirm}
                 disabled={isConfirmButtonDisabled}
                 className={`px-4 py-2 rounded-md text-white ${isConfirmButtonDisabled
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-blue-500 hover:bg-blue-600"
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-blue-600"
                   }`}
               >
                 Confirmar
@@ -407,3 +422,7 @@ const Services = () => {
 };
 
 export default Services;
+function setProfessionals(data: any) {
+  throw new Error("Function not implemented.");
+}
+

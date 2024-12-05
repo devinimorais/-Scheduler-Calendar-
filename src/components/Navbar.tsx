@@ -7,11 +7,8 @@ const Navbar: React.FC = () => {
   const location = useLocation();
 
   const menuItems = [
-    { name: "Início", path: "/home" },
     { name: "Serviços", path: "/services" },
-    { name: "Profissionais", path: "/professionals" },
-    { name: "Login", path: "/login" },
-    { name: "Horários reservardos", path: "/bookTime" },
+    // { name: "Profissionais", path: "/professionals" },
   ];
 
   const handleNavigation = (path: string) => {
@@ -31,7 +28,7 @@ const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div
-            onClick={() => handleNavigation("/home")}
+
             className="flex-shrink-0 text-lg md:text-xl lg:text-2xl font-bold cursor-pointer"
           >
             Agendador
