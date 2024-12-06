@@ -19,14 +19,8 @@ type Service = {
   users: Professional[];
 };
 
-type TimeSlot = {
-  time: string;
-  available: boolean;
-};
-
 const Services = () => {
   const [services, setServices] = useState<Service[]>([]);
-  const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate(); // Hook de navegação do React Router
@@ -85,7 +79,7 @@ const Services = () => {
             .map((service) => (
               <div
                 key={service.id}
-                className="relative bg-[#f8f9fa] text-gray-900 rounded-lg"
+                className="relative bg-[#f8f9fa] text-gray-900 rounded-lg max-w-md"
                 style={{
                   boxShadow: "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
                 }}
@@ -96,24 +90,21 @@ const Services = () => {
 
                 <div className="h-2 bg-black rounded-t-lg"></div>
                 <div className="p-4 space-y-4">
-                  <h3 className="text-xl font-extrabold text-gray-900 uppercase tracking-wide text-left">
+                  <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wide text-center">
                     {service.name}
                   </h3>
-                  <p className="text-gray-700 text-sm leading-relaxed font-medium border-t border-black pt-3"></p>
-                  <div className="flex justify-between items-center">
-                    <div className="text-left">
-                      <p className="text-gray-900 font-semibold text-lg">
-                        Descrição: {service.description.charAt(0).toUpperCase() + service.description.slice(1)}
-                      </p>
-                      <p className="text-gray-900 font-semibold text-lg">Duração: {service.duration} min</p>
-                    </div>
+                  <div className="text-left">
+                    <p className="text-gray-900 font-medium text-sm">
+                      Descrição: {service.description.charAt(0).toUpperCase() + service.description.slice(1)}
+                    </p>
+                    <p className="text-gray-900 font-medium text-sm">Duração: {service.duration} min</p>
                   </div>
                 </div>
 
                 <div className="p-4">
                   <button
                     onClick={() => handleSelectService(service)}
-                    className="w-full py-2 bg-black text-white font-medium rounded-md hover:bg-gray-800 transition-all"
+                    className="w-full py-2 bg-black text-white font-medium rounded-md hover:bg-gray-800 transition-all text-sm"
                   >
                     Selecionar
                   </button>
