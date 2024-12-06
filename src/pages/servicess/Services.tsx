@@ -15,7 +15,7 @@ type Service = {
   description: string;
   price: string;
   duration: string;
-  users: Professional[]; // Profissionais associados ao serviço
+  users: Professional[];
 };
 
 type TimeSlot = {
@@ -36,12 +36,12 @@ const Services = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  // Fetch services and professionals on component mount
+
   useEffect(() => {
     const fetchServices = async () => {
       try {
         const { data } = await axios.post("https://api.tzsexpertacademy.com/bypass/", {
-          url: "https://api.tzsexpertacademy.com/service",
+          url: "https://api.tzsexpertacademy.com/service/16",
           method: "GET",
         });
         setServices(data.data);
@@ -61,7 +61,6 @@ const Services = () => {
     const formattedDate = `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
     setSelectedDate(formattedDate);
 
-    // Mock para horários disponíveis
     const mockTimeSlots: TimeSlot[] = [
       { time: "09:00", available: true },
       { time: "10:00", available: true },
@@ -145,20 +144,45 @@ const Services = () => {
             .map((service) => (
               <div
                 key={service.id}
-                className="bg-white p-6 rounded-lg shadow-lg transform transition-transform hover:scale-105 hover:shadow-2xl"
+                className="relative bg-[#f8f9fa] text-gray-900 rounded-lg"
+                style={{
+                  boxShadow: "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
+                }}
               >
-                <h3 className="text-xl font-semibold text-gray-800">{service.name}</h3>
-                <p className="text-gray-500 mt-2">{service.description}</p>
-                <p className="mt-4 font-medium text-lg text-green-600">Preço: R$ {service.price}</p>
-                <button
-                  onClick={() => setSelectedService(service)}
-                  className="mt-6 px-6 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-all"
-                >
-                  Selecionar
-                </button>
+                <div className="absolute top-0 right-0 bg-gradient-to-r from-black to-gray-500 text-white px-4 py-2 rounded-bl-xl shadow-lg">
+                  <p className="text-sm font-bold">R$ {service.price}</p>
+                </div>
+
+                <div className="h-2 bg-black rounded-t-lg"></div>
+                <div className="p-4 space-y-4">
+                  <h3 className="text-xl font-extrabold text-gray-900 uppercase tracking-wide text-left">
+                    {service.name}
+                  </h3>
+                  <p className="text-gray-700 text-sm leading-relaxed font-medium border-t border-black pt-3"></p>
+                  <div className="flex justify-between items-center">
+                    <div className="text-left">
+                      <p className="text-gray-900 font-semibold text-lg">
+                        Descrição: {service.description.charAt(0).toUpperCase() + service.description.slice(1)}
+                      </p>
+                      <p className="text-gray-900 font-semibold text-lg">Duração: {service.duration} min</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4">
+                  <button
+                    onClick={() => setSelectedService(service)}
+                    className="w-full py-2 bg-black text-white font-medium rounded-md hover:bg-gray-800 transition-all"
+                  >
+                    Selecionar
+                  </button>
+                </div>
               </div>
             ))}
         </div>
+
+
+
       </div>
 
       {selectedService && !selectedProfessional && (
@@ -202,12 +226,11 @@ const Services = () => {
                 <button
                   key={day}
                   onClick={() => handleDateSelection(day)}
-                  className={`p-2 rounded-full ${
-                    selectedDate ===
+                  className={`p-2 rounded-full ${selectedDate ===
                     `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-100"
-                  }`}
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-100"
+                    }`}
                 >
                   {day}
                 </button>
@@ -219,13 +242,12 @@ const Services = () => {
                   key={slot.time}
                   onClick={() => setSelectedTimeSlot(slot.time)}
                   disabled={!slot.available}
-                  className={`px-4 py-2 rounded-md mr-2 ${
-                    slot.available
-                      ? selectedTimeSlot === slot.time
-                        ? "bg-green-500 text-white"
-                        : "bg-gray-200"
-                      : "bg-red-200"
-                  }`}
+                  className={`px-4 py-2 rounded-md mr-2 ${slot.available
+                    ? selectedTimeSlot === slot.time
+                      ? "bg-green-500 text-white"
+                      : "bg-gray-200"
+                    : "bg-red-200"
+                    }`}
                 >
                   {slot.time}
                 </button>
