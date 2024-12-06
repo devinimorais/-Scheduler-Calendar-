@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "../../components/Navbar";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 type Professional = {
   id: number;
@@ -46,7 +48,11 @@ const Professionals = () => {
   };
 
   const handleConfirm = () => {
-    console.log("Agendamento confirmado para:", selectedDate, selectedTimeSlot);
+    // Exibe o toast de confirmação
+    toast.success(`Agendamento confirmado para ${selectedDate} às ${selectedTimeSlot}!`, {
+      position: "top-right", // Use a string para a posição
+    });
+    
     closeModal();
   };
 
@@ -57,7 +63,7 @@ const Professionals = () => {
       <Navbar />
       <div className="p-6 lg:p-8 mt-16">
         <h1 className="text-center text-4xl font-extrabold text-gray-900 mb-4">
-          Profissionais para o Serviço: <span className="text-teal-500">{serviceName}</span>
+          <span className="text-black">{serviceName}</span>
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
           {professionals.length > 0 ? (
@@ -190,6 +196,8 @@ const Professionals = () => {
           </div>
         </div>
       )}
+
+      <ToastContainer />
     </div>
   );
 };

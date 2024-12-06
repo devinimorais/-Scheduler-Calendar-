@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Importação do hook de navegação
+import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import { PiInfoDuotone } from "react-icons/pi";
+import { PiClockCounterClockwiseDuotone } from "react-icons/pi";
+import Home from "../home/Home";
 
 type Professional = {
   id: number;
@@ -20,16 +23,22 @@ type Service = {
 };
 
 const Services = () => {
+  const { serviceId } = useParams<{ serviceId: string }>();
   const [services, setServices] = useState<Service[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
-  const navigate = useNavigate(); // Hook de navegação do React Router
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchServices = async () => {
+      if (!serviceId) {
+        toast.error("ID do serviço não fornecido.");
+        return;
+      }
+
       try {
         const { data } = await axios.post("https://api.tzsexpertacademy.com/bypass/", {
-          url: "https://api.tzsexpertacademy.com/service/16",
+          url: `https://api.tzsexpertacademy.com/service/${serviceId}`,
           method: "GET",
         });
         setServices(data.data);
@@ -41,10 +50,9 @@ const Services = () => {
     };
 
     fetchServices();
-  }, []);
+  }, [serviceId]);
 
   const handleSelectService = (service: Service) => {
-    // Redireciona o usuário para a página de profissionais e passa os dados do serviço selecionado
     navigate("/professionals", { state: { professionals: service.users, serviceName: service.name } });
   };
 
@@ -61,10 +69,7 @@ const Services = () => {
       <Navbar />
       <ToastContainer />
       <div className="p-6 lg:p-8 mt-16">
-        <h1 className="text-center text-4xl font-extrabold text-gray-900 mb-4">
-          Descubra o Melhor Serviço
-        </h1>
-        <div className="flex justify-end mb-6">
+        {/* <div className="flex justify-end mb-6">
           <input
             type="text"
             placeholder="Procurar serviços..."
@@ -72,39 +77,49 @@ const Services = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-        </div>
+        </div> */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {services
             .filter((service) => service.name.toLowerCase().includes(searchTerm.toLowerCase()))
             .map((service) => (
               <div
                 key={service.id}
-                className="relative bg-[#f8f9fa] text-gray-900 rounded-lg max-w-md"
+                className="relative bg-[#f8f9fa] text-gray-900 rounded-lg mx-auto w-[90%] sm:w-[70%]"
                 style={{
-                  boxShadow: "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
+                  boxShadow:
+                    "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
                 }}
               >
-                <div className="absolute top-0 right-0 bg-gradient-to-r from-black to-gray-500 text-white px-4 py-2 rounded-bl-xl shadow-lg">
-                  <p className="text-sm font-bold">R$ {service.price}</p>
+                <div className="absolute right-0 bg-gradient-to-r from-black to-gray-500 text-white px-4 py-2 rounded-lg shadow-lg">
+                  <p className="text-sm font-bold text-green-300">R$ {parseInt(service.price)}</p>
                 </div>
 
                 <div className="h-2 bg-black rounded-t-lg"></div>
-                <div className="p-4 space-y-4">
-                  <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wide text-center">
+                <div className="p-4 space-y-2">
+                  <h3 className="text-xl font-extrabold text-gray-900 uppercase tracking-wide text-left border-b border-gray-300 pb-2">
                     {service.name}
                   </h3>
-                  <div className="text-left">
-                    <p className="text-gray-900 font-medium text-sm">
-                      Descrição: {service.description.charAt(0).toUpperCase() + service.description.slice(1)}
-                    </p>
-                    <p className="text-gray-900 font-medium text-sm">Duração: {service.duration} min</p>
+
+                  <div className="mt-2 space-y-2">
+                    <div className="flex items-center space-x-3">
+                      <PiClockCounterClockwiseDuotone className="text-black text-3xl" />
+                      <p className="text-gray-700 text-lg leading-relaxed font-medium">
+                        {service.duration} minutos
+                      </p>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <PiInfoDuotone className="text-black text-3xl" />
+                      <p className="text-gray-700 text-lg leading-relaxed font-medium">
+                        {service.description.charAt(0).toUpperCase() + service.description.slice(1)}
+                      </p>
+                    </div>
                   </div>
                 </div>
 
                 <div className="p-4">
                   <button
                     onClick={() => handleSelectService(service)}
-                    className="w-full py-2 bg-black text-white font-medium rounded-md hover:bg-gray-800 transition-all text-sm"
+                    className="w-full py-2 bg-black text-white font-medium rounded-md hover:bg-gray-800 transition-all"
                   >
                     Selecionar
                   </button>
@@ -112,6 +127,8 @@ const Services = () => {
               </div>
             ))}
         </div>
+
+
       </div>
     </div>
   );
