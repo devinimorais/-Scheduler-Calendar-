@@ -31,17 +31,39 @@ const Professionals = () => {
             professionals.map((professional) => (
               <div
                 key={professional.id}
-                className="bg-white text-gray-900 rounded-xl shadow-lg p-6 flex flex-col items-center"
+                className="relative bg-[#f8f9fa] text-gray-900 rounded-lg"
+                style={{
+                  boxShadow:
+                    "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
+                }}
               >
-                <h2 className="text-xl font-semibold mb-2 text-center">{professional.name}</h2>
-                <p className="text-sm text-gray-500 mb-4">{professional.profession}</p>
-                <button className="px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600">
-                  Ver Mais
-                </button>
+                <div className="absolute top-0 right-0 bg-gradient-to-r from-black to-gray-500 text-white px-4 py-2 rounded-bl-xl shadow-lg">
+                  <p className="text-sm font-bold">ID: {professional.id}</p>
+                </div>
+
+                <div className="h-2 bg-black rounded-t-lg"></div>
+                <div className="p-4 space-y-4">
+                  <h2 className="text-xl font-extrabold text-gray-900 uppercase tracking-wide text-left">
+                    {professional.name}
+                  </h2>
+                  <p className="text-gray-700 text-sm leading-relaxed font-medium border-t border-black pt-3">
+                    Profissão: {professional.profession}
+                  </p>
+                </div>
+
+                <div className="p-4">
+                  <button
+                    className="w-full py-2 bg-black text-white font-medium rounded-md hover:bg-gray-800 transition-all"
+                  >
+                    Ver Mais
+                  </button>
+                </div>
               </div>
             ))
           ) : (
-            <p className="text-center text-gray-500">Nenhum profissional disponível para este serviço.</p>
+            <p className="text-center text-gray-500">
+              Nenhum profissional disponível para este serviço.
+            </p>
           )}
         </div>
       </div>
