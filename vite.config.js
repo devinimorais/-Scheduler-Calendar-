@@ -1,7 +1,20 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-
-// https://vite.dev/config/
-export default defineConfig({
-  plugins: [react()],
-})
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./src/**/*.{html,js,ts,jsx,tsx}"
+  ],
+  theme: {
+    extend: {
+      keyframes: {
+        expand: {
+          '0%': { width: '0%' },
+          '100%': { width: '50%' },
+        },
+      },
+      animation: {
+        expand: 'expand 1s ease-in-out forwards',
+      },
+    },
+  },
+  plugins: [],
+};

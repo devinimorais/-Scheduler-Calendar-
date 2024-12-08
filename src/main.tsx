@@ -27,7 +27,7 @@ const router = createBrowserRouter([
     element: <Scheduleduler />,
   },
   {
-    path: "/services", // Página de serviços
+    path: "/services/:serviceId", // Página de serviços com ID dinâmico
     element: <Services />,
   },
   {
