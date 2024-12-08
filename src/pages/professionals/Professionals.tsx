@@ -69,13 +69,19 @@ const Professionals = () => {
       return;
     }
   
-    // Obter o dia da semana em português da data selecionada
-    const selectedDate = new Date(date);
-    const dayOfWeekName = selectedDate.toLocaleDateString("pt-BR", { weekday: "long" }).toLowerCase();
+    // Obter o índice do dia da semana no JavaScript (0 = domingo, 1 = segunda, ..., 6 = sábado)
+    const dayOfWeekIndex = new Date(date).getDay();
   
-    // Encontrar o horário correspondente na API com base no "weekday"
+    // Reorganizar o índice do JavaScript (domingo = 0) para alinhar com o padrão da API (segunda = 0)
+    const adjustedIndex = (dayOfWeekIndex === 0 ? 6 : dayOfWeekIndex - 1); // Segunda = 0, ..., Domingo = 6
+  
+    // Mapear corretamente o dia da semana para "weekdayEn"
+    const weekdayEnMap = ["tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", "monday"];
+    const selectedWeekdayEn = weekdayEnMap[adjustedIndex];
+  
+    // Encontrar o horário correspondente na API com base no "weekdayEn"
     const schedule = professional.schedules.find(
-      (s) => s.weekday.toLowerCase() === dayOfWeekName
+      (s) => s.weekdayEn.toLowerCase() === selectedWeekdayEn
     );
   
     if (!schedule) {
@@ -89,6 +95,7 @@ const Professionals = () => {
     // Corrigir o horário de fim, caso seja "00:00" (final do dia)
     const correctedEndTime = endTime === "00:00" ? "23:59" : endTime;
   
+    // Convertendo horários para objetos Date
     const start = new Date(`1970-01-01T${startTime}:00`);
     const end = new Date(`1970-01-01T${correctedEndTime}:00`);
   
@@ -108,6 +115,10 @@ const Professionals = () => {
     setAvailableTimeSlots(slots);
   };
   
+  
+
+
+
 
   
   
