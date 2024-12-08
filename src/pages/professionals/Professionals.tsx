@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { ToastContainer, toast } from "react-toastify";
@@ -8,12 +8,20 @@ type Professional = {
   id: number;
   name: string;
   profession: string;
+  appointmentSpacing: string; // Ex.: "30"
+  schedules: {
+    startTime: string; // Ex.: "08:00"
+    endTime: string; // Ex.: "22:22"
+    weekday: string; // Ex.: "Segunda-feira"
+    weekdayEn: string; // Ex.: "monday"
+  }[];
 };
 
 type Service = {
   id: number;
   name: string;
   description: string;
+  duration: number; // Duração em minutos
 };
 
 const Professionals = () => {
@@ -24,23 +32,85 @@ const Professionals = () => {
   const [selectedProfessional, setSelectedProfessional] = useState<Professional | null>(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
-  const [availableTimeSlots, setAvailableTimeSlots] = useState([
-    { time: "09:00", available: true },
-    { time: "10:00", available: false },
-    { time: "11:00", available: true },
-  ]);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
-  const handlePreviousMonth = () => setCurrentMonth((prev) => (prev > 0 ? prev - 1 : 11));
-  const handleNextMonth = () => setCurrentMonth((prev) => (prev < 11 ? prev + 1 : 0));
+  const handlePreviousMonth = () => {
+    if (currentMonth === 0) {
+      setCurrentMonth(11);
+      setCurrentYear((prevYear) => prevYear - 1);
+    } else {
+      setCurrentMonth((prevMonth) => prevMonth - 1);
+    }
+  };
+
+  const handleNextMonth = () => {
+    if (currentMonth === 11) {
+      setCurrentMonth(0);
+      setCurrentYear((prevYear) => prevYear + 1);
+    } else {
+      setCurrentMonth((prevMonth) => prevMonth + 1);
+    }
+  };
 
   const handleDateSelection = (day: number) => {
     const date = `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
     setSelectedDate(date);
+    if (selectedProfessional) {
+      generateTimeSlots(selectedProfessional, date);
+    }
   };
 
+  const generateTimeSlots = (professional: Professional, date: string) => {
+    if (!professional.schedules || !professional.schedules.length) {
+      setAvailableTimeSlots([]);
+      return;
+    }
+  
+    // Obter o dia da semana em português da data selecionada
+    const selectedDate = new Date(date);
+    const dayOfWeekName = selectedDate.toLocaleDateString("pt-BR", { weekday: "long" }).toLowerCase();
+  
+    // Encontrar o horário correspondente na API com base no "weekday"
+    const schedule = professional.schedules.find(
+      (s) => s.weekday.toLowerCase() === dayOfWeekName
+    );
+  
+    if (!schedule) {
+      setAvailableTimeSlots([]);
+      return;
+    }
+  
+    const { startTime, endTime } = schedule;
+    const duration = parseInt(professional.appointmentSpacing, 10) || 30;
+  
+    // Corrigir o horário de fim, caso seja "00:00" (final do dia)
+    const correctedEndTime = endTime === "00:00" ? "23:59" : endTime;
+  
+    const start = new Date(`1970-01-01T${startTime}:00`);
+    const end = new Date(`1970-01-01T${correctedEndTime}:00`);
+  
+    if (start >= end) {
+      setAvailableTimeSlots([]); // Nenhum horário válido
+      return;
+    }
+  
+    // Gerar horários com base no `duration`
+    const slots: string[] = [];
+    let current = new Date(start);
+    while (current < end) {
+      slots.push(current.toTimeString().slice(0, 5)); // Adicionar horário no formato HH:mm
+      current.setMinutes(current.getMinutes() + duration);
+    }
+  
+    setAvailableTimeSlots(slots);
+  };
+  
+
+  
+  
   const closeModal = () => {
     setSelectedProfessional(null);
     setSelectedDate("");
@@ -48,13 +118,17 @@ const Professionals = () => {
   };
 
   const handleConfirm = () => {
-    // Exibe o toast de confirmação
     toast.success(`Agendamento confirmado para ${selectedDate} às ${selectedTimeSlot}!`, {
-      position: "top-right", // Use a string para a posição
+      position: "top-right",
     });
-    
     closeModal();
   };
+
+  useEffect(() => {
+    if (selectedProfessional && selectedDate) {
+      generateTimeSlots(selectedProfessional, selectedDate);
+    }
+  }, [selectedProfessional, selectedDate]);
 
   const isConfirmButtonDisabled = !selectedDate || !selectedTimeSlot;
 
@@ -79,7 +153,6 @@ const Professionals = () => {
                 <div className="absolute top-0 right-0 bg-gradient-to-r from-black to-gray-500 text-white px-4 py-2 rounded-bl-xl shadow-lg">
                   <p className="text-sm font-bold">ID: {professional.id}</p>
                 </div>
-
                 <div className="h-2 bg-black rounded-t-lg"></div>
                 <div className="p-4 space-y-4">
                   <h2 className="text-xl font-extrabold text-gray-900 uppercase tracking-wide text-left">
@@ -89,7 +162,6 @@ const Professionals = () => {
                     Profissão: {professional.profession}
                   </p>
                 </div>
-
                 <div className="p-4">
                   <button
                     onClick={() => setSelectedProfessional(professional)}
@@ -101,9 +173,7 @@ const Professionals = () => {
               </div>
             ))
           ) : (
-            <p className="text-center text-gray-500">
-              Nenhum profissional disponível para este serviço.
-            </p>
+            <p className="text-center text-gray-500">Nenhum profissional disponível para este serviço.</p>
           )}
         </div>
       </div>
@@ -124,7 +194,10 @@ const Professionals = () => {
                     {"<"}
                   </button>
                   <h3 className="text-xl font-semibold">
-                    {currentMonth + 1}/{currentYear}
+                    {new Date(currentYear, currentMonth).toLocaleDateString("pt-BR", {
+                      month: "long",
+                      year: "numeric",
+                    })}
                   </h3>
                   <button
                     className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400"
@@ -133,40 +206,53 @@ const Professionals = () => {
                     {">"}
                   </button>
                 </div>
-                <div className="grid grid-cols-7 gap-4">
-                  {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => (
-                    <button
-                      key={day}
-                      onClick={() => handleDateSelection(day)}
-                      className={`w-full h-10 rounded-full ${selectedDate ===
-                        `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
-                        ? "bg-purple-500 text-white"
-                        : "bg-gray-100 text-gray-700"
-                        } hover:bg-purple-200`}
-                    >
+                <div className="grid grid-cols-7 gap-4 mb-2 text-center font-bold">
+                  {["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"].map((day, index) => (
+                    <div key={index} className="text-gray-700">
                       {day}
-                    </button>
+                    </div>
                   ))}
                 </div>
+                <div className="grid grid-cols-7 gap-4">
+                  {(() => {
+                    const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay(); // Alinha o primeiro dia
+                    const days = [];
+                    for (let i = 0; i < firstDayOfMonth; i++) {
+                      days.push(<div key={`empty-${i}`} className="w-full h-10"></div>); // Espaços vazios
+                    }
+                    for (let day = 1; day <= daysInMonth; day++) {
+                      days.push(
+                        <button
+                          key={day}
+                          onClick={() => handleDateSelection(day)}
+                          className={`w-full h-10 rounded-full ${selectedDate ===
+                              `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+                              ? "bg-purple-500 text-white"
+                              : "bg-gray-100 text-gray-700"
+                            } hover:bg-purple-200`}
+                        >
+                          {day}
+                        </button>
+                      );
+                    }
+                    return days;
+                  })()}
+                </div>
               </div>
-              <div className="w-1/3 bg-gray-100 p-6 rounded-lg">
+              <div className="w-1/3 bg-gray-100 p-6 rounded-lg overflow-y-auto max-h-64">
                 <h3 className="text-xl font-bold mb-4">Horários Disponíveis</h3>
                 {availableTimeSlots.length > 0 ? (
-                  <ul>
+                  <ul className="space-y-2">
                     {availableTimeSlots.map((slot, index) => (
                       <li
                         key={index}
-                        onClick={() =>
-                          slot.available && setSelectedTimeSlot(slot.time)
-                        }
-                        className={`p-2 rounded-md mb-2 cursor-pointer ${slot.available
-                          ? selectedTimeSlot === slot.time
+                        onClick={() => setSelectedTimeSlot(slot)}
+                        className={`p-2 rounded-md cursor-pointer ${selectedTimeSlot === slot
                             ? "bg-green-500 text-white"
-                            : "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700 cursor-not-allowed"
+                            : "bg-green-100 text-green-700 hover:bg-green-200"
                           }`}
                       >
-                        {slot.time} {slot.available ? "" : "(Indisponível)"}
+                        {slot}
                       </li>
                     ))}
                   </ul>
@@ -186,8 +272,8 @@ const Professionals = () => {
                 onClick={handleConfirm}
                 disabled={isConfirmButtonDisabled}
                 className={`px-4 py-2 rounded-md text-white ${isConfirmButtonDisabled
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-blue-500 hover:bg-blue-600"
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-500 hover:bg-blue-600"
                   }`}
               >
                 Confirmar

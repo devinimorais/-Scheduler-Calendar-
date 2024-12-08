@@ -78,55 +78,66 @@ const Services = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div> */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services
-            .filter((service) => service.name.toLowerCase().includes(searchTerm.toLowerCase()))
-            .map((service) => (
-              <div
-                key={service.id}
-                className="relative bg-[#f8f9fa] text-gray-900 rounded-lg mx-auto w-[90%] sm:w-[70%]"
-                style={{
-                  boxShadow:
-                    "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
-                }}
-              >
-                <div className="absolute right-0 bg-gradient-to-r from-black to-gray-500 text-white px-4 py-2 rounded-lg shadow-lg">
-                  <p className="text-sm font-bold text-green-300">R$ {parseInt(service.price)}</p>
-                </div>
-
-                <div className="h-2 bg-black rounded-t-lg"></div>
-                <div className="p-4 space-y-2">
-                  <h3 className="text-xl font-extrabold text-gray-900 uppercase tracking-wide text-left border-b border-gray-300 pb-2">
-                    {service.name}
-                  </h3>
-
-                  <div className="mt-2 space-y-2">
-                    <div className="flex items-center space-x-3">
-                      <PiClockCounterClockwiseDuotone className="text-black text-3xl" />
-                      <p className="text-gray-700 text-lg leading-relaxed font-medium">
-                        {service.duration} minutos
-                      </p>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <PiInfoDuotone className="text-black text-3xl" />
-                      <p className="text-gray-700 text-lg leading-relaxed font-medium">
-                        {service.description.charAt(0).toUpperCase() + service.description.slice(1)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-4">
-                  <button
-                    onClick={() => handleSelectService(service)}
-                    className="w-full py-2 bg-black text-white font-medium rounded-md hover:bg-gray-800 transition-all"
-                  >
-                    Selecionar
-                  </button>
-                </div>
-              </div>
-            ))}
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  {services
+    .filter((service) =>
+      service.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .map((service) => (
+      <div
+        key={service.id}
+        className="relative bg-[#f8f9fa] text-gray-900 rounded-lg mx-auto w-[90%] sm:w-[70%] overflow-hidden"
+        style={{
+          boxShadow:
+            "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
+        }}
+      >
+        {/* Preço no canto superior direito */}
+        <div className="absolute right-0 top-0 bg-gradient-to-r from-black to-gray-500 text-white px-4 py-2 rounded-bl-lg shadow-lg">
+          <p className="text-sm font-bold text-green-300">R$ {parseInt(service.price)}</p>
         </div>
+
+        {/* Barra de destaque no topo */}
+        <div className="h-2 bg-black"></div>
+
+        {/* Conteúdo principal do card */}
+        <div className="p-6 space-y-4">
+          {/* Nome do serviço */}
+          <h3 className="text-xl font-extrabold text-gray-900 uppercase tracking-wide border-b border-gray-300 pb-2">
+            {service.name}
+          </h3>
+
+          {/* Informações do serviço */}
+          <div className="space-y-3">
+            <div className="flex items-center space-x-3">
+              <PiClockCounterClockwiseDuotone className="text-black text-2xl" />
+              <p className="text-gray-700 text-lg font-medium">
+                {service.duration} minutos
+              </p>
+            </div>
+            <div className="flex items-center space-x-3">
+              <PiInfoDuotone className="text-black text-2xl" />
+              <p className="text-gray-700 text-lg font-medium">
+                {service.description.charAt(0).toUpperCase() +
+                  service.description.slice(1)}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Botão de seleção */}
+        <div className="p-4 bg-gray-100 border-t border-gray-300">
+          <button
+            onClick={() => handleSelectService(service)}
+            className="w-full py-2 bg-black text-white font-medium rounded-md hover:bg-gray-800 transition-all"
+          >
+            Selecionar
+          </button>
+        </div>
+      </div>
+    ))}
+</div>
+
 
 
       </div>
