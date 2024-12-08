@@ -84,7 +84,7 @@ const Services = () => {
                   boxShadow: "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
                 }}
               >
-                <div className="absolute top-0 right-0 bg-gradient-to-r from-black to-gray-500 text-white px-4 py-2 rounded-bl-xl shadow-lg">
+                <div className="absolute top-0 right-0 bg-gradient-to-r from-black to-gray-500 text-green-500 px-4 py-2 rounded-bl-xl shadow-lg">
                   <p className="text-sm font-bold">R$ {service.price}</p>
                 </div>
 
