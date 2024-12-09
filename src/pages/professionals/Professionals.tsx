@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 import Navbar from "../../components/Navbar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { TbCalendarClock } from "react-icons/tb"; // Certifique-se de importar o ícone
 
 type Professional = {
   id: number;
   name: string;
   profession: string;
-  appointmentSpacing: string; // Ex.: "30"
+  appointmentSpacing: string;
   schedules: {
-    startTime: string; // Ex.: "08:00"
-    endTime: string; // Ex.: "22:22"
-    weekday: string; // Ex.: "Segunda-feira"
-    weekdayEn: string; // Ex.: "monday"
+    startTime: string;
+    endTime: string;
+    weekday: string;
+    weekdayEn: string;
   }[];
 };
 
@@ -21,7 +23,7 @@ type Service = {
   id: number;
   name: string;
   description: string;
-  duration: number; // Duração em minutos
+  duration: number;
 };
 
 const Professionals = () => {
@@ -36,6 +38,21 @@ const Professionals = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+  useEffect(() => {
+    if (serviceName) {
+      toast.info(`Serviço selecionado: ${serviceName}`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        className: "text-sm font-medium bg-black text-white rounded-md",
+      });
+    }
+  }, [serviceName]);
 
   const handlePreviousMonth = () => {
     if (currentMonth === 0) {
@@ -68,60 +85,71 @@ const Professionals = () => {
       setAvailableTimeSlots([]);
       return;
     }
-  
-    // Obter o índice do dia da semana no JavaScript (0 = domingo, 1 = segunda, ..., 6 = sábado)
+
     const dayOfWeekIndex = new Date(date).getDay();
-  
-    // Reorganizar o índice do JavaScript (domingo = 0) para alinhar com o padrão da API (segunda = 0)
-    const adjustedIndex = (dayOfWeekIndex === 0 ? 6 : dayOfWeekIndex - 1); // Segunda = 0, ..., Domingo = 6
-  
-    // Mapear corretamente o dia da semana para "weekdayEn"
-    const weekdayEnMap = ["tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", "monday"];
-    const selectedWeekdayEn = weekdayEnMap[adjustedIndex];
-  
-    // Encontrar o horário correspondente na API com base no "weekdayEn"
+    const weekdayEnMap = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+    const selectedWeekdayEn = weekdayEnMap[dayOfWeekIndex];
+
     const schedule = professional.schedules.find(
       (s) => s.weekdayEn.toLowerCase() === selectedWeekdayEn
     );
-  
+
     if (!schedule) {
       setAvailableTimeSlots([]);
       return;
     }
-  
+
     const { startTime, endTime } = schedule;
     const duration = parseInt(professional.appointmentSpacing, 10) || 30;
-  
-    // Corrigir o horário de fim, caso seja "00:00" (final do dia)
     const correctedEndTime = endTime === "00:00" ? "23:59" : endTime;
-  
-    // Convertendo horários para objetos Date
     const start = new Date(`1970-01-01T${startTime}:00`);
     const end = new Date(`1970-01-01T${correctedEndTime}:00`);
-  
+
     if (start >= end) {
-      setAvailableTimeSlots([]); // Nenhum horário válido
+      setAvailableTimeSlots([]);
       return;
     }
-  
-    // Gerar horários com base no `duration`
+
     const slots: string[] = [];
     let current = new Date(start);
     while (current < end) {
-      slots.push(current.toTimeString().slice(0, 5)); // Adicionar horário no formato HH:mm
+      slots.push(current.toTimeString().slice(0, 5));
       current.setMinutes(current.getMinutes() + duration);
     }
-  
+
     setAvailableTimeSlots(slots);
   };
-  
-  
 
+  const createAppointment = async () => {
+    if (!selectedDate || !selectedTimeSlot || !selectedProfessional) {
+      toast.error("Por favor, selecione uma data, horário e profissional.");
+      return;
+    }
 
+    try {
+      await axios.post("https://api.tzsexpertacademy.com/bypass/", {
+        url: "https://api.tzsexpertacademy.com/appointments",
+        method: "POST",
+        body: {
+          scheduledDate: new Date(`${selectedDate}T${selectedTimeSlot}:00Z`).toISOString(),
+          description: `Agendamento com ${selectedProfessional.name}`,
+          status: "pending",
+          userId: 3,
+          ticketId: 12,
+        },
+      });
 
+      toast.success("Agendamento criado com sucesso!");
+      closeModal();
+    } catch (err: any) {
+      if (err.response) {
+        toast.error(`Erro: ${err.response.data.message || JSON.stringify(err.response.data)}`);
+      } else {
+        toast.error("Falha ao criar agendamento. Verifique sua conexão.");
+      }
+    }
+  };
 
-  
-  
   const closeModal = () => {
     setSelectedProfessional(null);
     setSelectedDate("");
@@ -129,10 +157,7 @@ const Professionals = () => {
   };
 
   const handleConfirm = () => {
-    toast.success(`Agendamento confirmado para ${selectedDate} às ${selectedTimeSlot}!`, {
-      position: "top-right",
-    });
-    closeModal();
+    createAppointment();
   };
 
   useEffect(() => {
@@ -147,48 +172,50 @@ const Professionals = () => {
     <div className="relative">
       <Navbar />
       <div className="p-6 lg:p-8 mt-16">
-        <h1 className="text-center text-4xl font-extrabold text-gray-900 mb-4">
-          <span className="text-black">{serviceName}</span>
-        </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
           {professionals.length > 0 ? (
             professionals.map((professional) => (
               <div
                 key={professional.id}
-                className="relative bg-[#f8f9fa] text-gray-900 rounded-lg"
-                style={{
-                  boxShadow:
-                    "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
-                }}
+                className="flex flex-col bg-white rounded-3xl mx-auto w-[90%] sm:w-[80%] shadow-md hover:shadow-lg transition-shadow duration-300"
               >
-                <div className="absolute top-0 right-0 bg-gradient-to-r from-black to-gray-500 text-white px-4 py-2 rounded-bl-xl shadow-lg">
-                  <p className="text-sm font-bold">ID: {professional.id}</p>
+                <div className="px-6 py-8 sm:p-10 sm:pb-6">
+                  <div className="grid items-center justify-center w-full grid-cols-1 text-left">
+                    <div>
+                      <h2 className="text-lg font-medium tracking-tighter text-gray-600 lg:text-3xl">
+                        {professional.name}
+                      </h2>
+                      <p className="mt-2 text-sm text-gray-500">
+                        Profissão: {professional.profession}
+                      </p>
+                    </div>
+                    <div className="mt-6 text-right">
+                      <p>
+                        <span className="text-3xl font-light tracking-tight text-green-700">
+                           {professional.appointmentSpacing} min
+                        </span>
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="h-2 bg-black rounded-t-lg"></div>
-                <div className="p-4 space-y-4">
-                  <h2 className="text-xl font-extrabold text-gray-900 uppercase tracking-wide text-left">
-                    {professional.name}
-                  </h2>
-                  <p className="text-gray-700 text-sm leading-relaxed font-medium border-t border-black pt-3">
-                    Profissão: {professional.profession}
-                  </p>
-                </div>
-                <div className="p-4">
+                <div className="flex px-6 pb-8 sm:px-8">
                   <button
                     onClick={() => setSelectedProfessional(professional)}
-                    className="w-full py-2 bg-black text-white font-medium rounded-md hover:bg-gray-800 transition-all"
+                    className="flex items-center justify-center w-full px-6 py-2.5 text-center text-white duration-200 bg-black border-2 border-black rounded-full hover:bg-transparent hover:border-black hover:text-black focus:outline-none focus-visible:outline-black text-sm focus-visible:ring-black"
                   >
-                    Ver Mais
+                    Reservar horário
+                    <TbCalendarClock className="ml-2 text-lg" />
                   </button>
                 </div>
               </div>
             ))
           ) : (
-            <p className="text-center text-gray-500">Nenhum profissional disponível para este serviço.</p>
+            <p className="text-center text-gray-500">
+              Nenhum profissional disponível para este serviço.
+            </p>
           )}
         </div>
       </div>
-
       {selectedProfessional && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-md max-w-4xl w-full p-8 flex flex-col">
@@ -226,10 +253,10 @@ const Professionals = () => {
                 </div>
                 <div className="grid grid-cols-7 gap-4">
                   {(() => {
-                    const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay(); // Alinha o primeiro dia
+                    const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
                     const days = [];
                     for (let i = 0; i < firstDayOfMonth; i++) {
-                      days.push(<div key={`empty-${i}`} className="w-full h-10"></div>); // Espaços vazios
+                      days.push(<div key={`empty-${i}`} className="w-full h-10"></div>);
                     }
                     for (let day = 1; day <= daysInMonth; day++) {
                       days.push(
@@ -237,9 +264,9 @@ const Professionals = () => {
                           key={day}
                           onClick={() => handleDateSelection(day)}
                           className={`w-full h-10 rounded-full ${selectedDate ===
-                              `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
-                              ? "bg-purple-500 text-white"
-                              : "bg-gray-100 text-gray-700"
+                            `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+                            ? "bg-purple-500 text-white"
+                            : "bg-gray-100 text-gray-700"
                             } hover:bg-purple-200`}
                         >
                           {day}
@@ -259,8 +286,8 @@ const Professionals = () => {
                         key={index}
                         onClick={() => setSelectedTimeSlot(slot)}
                         className={`p-2 rounded-md cursor-pointer ${selectedTimeSlot === slot
-                            ? "bg-green-500 text-white"
-                            : "bg-green-100 text-green-700 hover:bg-green-200"
+                          ? "bg-green-500 text-white"
+                          : "bg-green-100 text-green-700 hover:bg-green-200"
                           }`}
                       >
                         {slot}
@@ -282,9 +309,7 @@ const Professionals = () => {
               <button
                 onClick={handleConfirm}
                 disabled={isConfirmButtonDisabled}
-                className={`px-4 py-2 rounded-md text-white ${isConfirmButtonDisabled
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-blue-500 hover:bg-blue-600"
+                className={`px-4 py-2 rounded-md text-white ${isConfirmButtonDisabled ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
                   }`}
               >
                 Confirmar
@@ -293,7 +318,6 @@ const Professionals = () => {
           </div>
         </div>
       )}
-
       <ToastContainer />
     </div>
   );

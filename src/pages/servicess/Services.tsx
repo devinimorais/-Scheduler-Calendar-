@@ -4,9 +4,8 @@ import Navbar from "../../components/Navbar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import { PiInfoDuotone } from "react-icons/pi";
-import { PiClockCounterClockwiseDuotone } from "react-icons/pi";
-import Home from "../home/Home";
+import { TbArrowBigRightLine } from "react-icons/tb";
+
 
 type Professional = {
   id: number;
@@ -65,81 +64,57 @@ const Services = () => {
   }
 
   return (
-    <div className="relative">
+    <div className="relative bg-customGray min-h-screen">
       <Navbar />
       <ToastContainer />
       <div className="p-6 lg:p-8 mt-16">
-        {/* <div className="flex justify-end mb-6">
-          <input
-            type="text"
-            placeholder="Procurar serviços..."
-            className="border p-2 rounded-md w-full lg:w-1/4"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div> */}
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-  {services
-    .filter((service) =>
-      service.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .map((service) => (
-      <div
-        key={service.id}
-        className="relative bg-[#f8f9fa] text-gray-900 rounded-lg mx-auto w-[90%] sm:w-[70%] overflow-hidden"
-        style={{
-          boxShadow:
-            "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
-        }}
-      >
-        {/* Preço no canto superior direito */}
-        <div className="absolute right-0 top-0 bg-gradient-to-r from-black to-gray-500 text-white px-4 py-2 rounded-bl-lg shadow-lg">
-          <p className="text-sm font-bold text-green-300">R$ {parseInt(service.price)}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {services
+            .filter((service) =>
+              service.name.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+            .map((service) => (
+              <div
+                key={service.id}
+                className="flex flex-col bg-white rounded-3xl mx-auto w-full sm:w-[90%] shadow-md hover:shadow-lg transition-shadow duration-300"
+              >
+                <div className="px-6 py-8 sm:p-10 sm:pb-6">
+                  <div className="grid items-center justify-center w-full grid-cols-1 text-left">
+                    <div>
+                      <h2 className="text-lg font-medium tracking-tighter text-black lg:text-3xl">
+                        {service.name}
+                      </h2>
+                      <p className="mt-2 text-xl text-gray-500">
+                        {service.description.charAt(0).toUpperCase() +
+                          service.description.slice(1)}
+                      </p>
+                    </div>
+                    <div className="mt-6 text-right">
+                      <p>
+                        <span className="text-4xl font-light tracking-tight text-green-700">
+                          R$ {parseInt(service.price)}
+                        </span>
+                        <span className="text-base font-medium text-black">
+                          {" "}
+                          / {service.duration} minutos
+                        </span>
+                      </p>
+                    </div>
+
+                  </div>
+                </div>
+                <div className="flex px-6 pb-8 sm:px-8">
+                  <button
+                    onClick={() => handleSelectService(service)}
+                    className="flex items-center justify-center w-full px-6 py-2.5 text-center text-white duration-200 bg-black border-2 border-black rounded-full hover:bg-transparent hover:border-black hover:text-black focus:outline-none focus-visible:outline-black text-sm focus-visible:ring-black"
+                  >
+                    Selecionar
+                    <TbArrowBigRightLine className="ml-2 text-lg" />
+                  </button>
+                </div>
+              </div>
+            ))}
         </div>
-
-        {/* Barra de destaque no topo */}
-        <div className="h-2 bg-black"></div>
-
-        {/* Conteúdo principal do card */}
-        <div className="p-6 space-y-4">
-          {/* Nome do serviço */}
-          <h3 className="text-xl font-extrabold text-gray-900 uppercase tracking-wide border-b border-gray-300 pb-2">
-            {service.name}
-          </h3>
-
-          {/* Informações do serviço */}
-          <div className="space-y-3">
-            <div className="flex items-center space-x-3">
-              <PiClockCounterClockwiseDuotone className="text-black text-2xl" />
-              <p className="text-gray-700 text-lg font-medium">
-                {service.duration} minutos
-              </p>
-            </div>
-            <div className="flex items-center space-x-3">
-              <PiInfoDuotone className="text-black text-2xl" />
-              <p className="text-gray-700 text-lg font-medium">
-                {service.description.charAt(0).toUpperCase() +
-                  service.description.slice(1)}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Botão de seleção */}
-        <div className="p-4 bg-gray-100 border-t border-gray-300">
-          <button
-            onClick={() => handleSelectService(service)}
-            className="w-full py-2 bg-black text-white font-medium rounded-md hover:bg-gray-800 transition-all"
-          >
-            Selecionar
-          </button>
-        </div>
-      </div>
-    ))}
-</div>
-
-
-
       </div>
     </div>
   );
