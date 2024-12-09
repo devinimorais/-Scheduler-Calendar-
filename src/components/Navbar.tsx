@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { FaBars, FaTimes, FaArrowAltCircleLeft } from "react-icons/fa";
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -8,6 +8,7 @@ const Navbar: React.FC = () => {
   const location = useLocation();
 
   const isHomePage = location.pathname === "/home";
+  const isProfessionalsPage = location.pathname === "/professionals"; // Verifica se está na rota /professionals
 
   return (
     <nav
@@ -24,6 +25,19 @@ const Navbar: React.FC = () => {
           >
             Agendador
           </div>
+
+          {/* Back Arrow Icon */}
+          {isProfessionalsPage && (
+            <div className="hidden md:block">
+              <button
+                onClick={() => navigate(-1)} // Retorna à página anterior
+                className="flex items-center justify-center text-xl hover:text-gray-300"
+              >
+                <FaArrowAltCircleLeft className="mr-2 h-6 w-6" />
+                <span>Voltar</span>
+              </button>
+            </div>
+          )}
 
           {/* Mobile Menu Button */}
           <div className="block md:hidden">
@@ -68,6 +82,20 @@ const Navbar: React.FC = () => {
               <FaTimes className="h-6 w-6" />
             </button>
           </div>
+
+          {/* Back Arrow in Mobile Menu */}
+          {isProfessionalsPage && (
+            <button
+              onClick={() => {
+                setIsMenuOpen(false);
+                navigate(-1); // Retorna à página anterior
+              }}
+              className="flex items-center text-lg hover:text-gray-300"
+            >
+              <FaArrowAltCircleLeft className="mr-3 h-5 w-5" />
+              Voltar
+            </button>
+          )}
         </div>
       </div>
     </nav>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../../components/Navbar";
@@ -19,13 +19,6 @@ type Professional = {
   }[];
 };
 
-type Service = {
-  id: number;
-  name: string;
-  description: string;
-  duration: number;
-};
-
 const Professionals = () => {
   const location = useLocation();
   const { professionals, serviceName }: { professionals: Professional[]; serviceName: string } =
@@ -37,8 +30,15 @@ const Professionals = () => {
   const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [searchTerm, setSearchTerm] = useState<string>(""); // Controla o texto digitado no campo de busca
+  const [searchOpen, setSearchOpen] = useState<boolean>(false); // Controla se o campo de busca está aberto
+  const searchRef = useRef<HTMLDivElement>(null); // Referência ao contêiner do search
+
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
+  // Variável para desabilitar o botão "Confirmar"
+  const isConfirmButtonDisabled = !selectedDate || !selectedTimeSlot || !selectedProfessional;
+  
   useEffect(() => {
     if (serviceName) {
       toast.info(
@@ -169,26 +169,75 @@ const Professionals = () => {
     createAppointment();
   };
 
+  // Fecha o campo de busca ao clicar fora
   useEffect(() => {
-    if (selectedProfessional && selectedDate) {
-      generateTimeSlots(selectedProfessional, selectedDate);
-    }
-  }, [selectedProfessional, selectedDate]);
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setSearchOpen(false);
+      }
+    };
 
-  const isConfirmButtonDisabled = !selectedDate || !selectedTimeSlot;
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const filteredProfessionals = professionals.filter((professional) =>
+    professional.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div className="relative">
+    <div className="relative bg-customGray min-h-screen">
       <Navbar />
-      <div className="p-6 lg:p-8 mt-16">
+
+      <div className="p-6 lg:p-8 mt-16 relative">
+        {/* Campo de busca */}
+        <div className="flex justify-end mb-6" ref={searchRef}>
+          <div
+            className={`relative ${searchOpen ? "w-[270px]" : "w-[60px]"
+              } h-[60px] bg-black shadow-lg rounded-full flex items-center transition-all duration-300`}
+            onClick={() => setSearchOpen(true)} // Abre o campo ao clicar
+          >
+            {/* Ícone de busca */}
+            <div className="flex items-center justify-center fill-white pl-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="22"
+                height="22"
+                className="group-hover:fill-blue-200 transition duration-300"
+              >
+                <path d="M18.9,16.776A10.539,10.539,0,1,0,16.776,18.9l5.1,5.1L24,21.88ZM10.5,18A7.5,7.5,0,1,1,18,10.5,7.507,7.507,0,0,1,10.5,18Z"></path>
+              </svg>
+            </div>
+            {/* Input de busca */}
+            {searchOpen && (
+              <input
+                type="text"
+                placeholder="Pesquisar profissionais"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="outline-none text-[16px] bg-transparent w-full text-white font-normal px-4 transition-all duration-300 placeholder-white"
+                autoFocus
+              />
+            )}
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
-          {professionals.length > 0 ? (
-            professionals.map((professional) => (
+          {filteredProfessionals.length > 0 ? (
+            filteredProfessionals.map((professional) => (
               <div
                 key={professional.id}
-                className="flex flex-col bg-white rounded-xl mx-auto w-full sm:w-[85%] shadow-md hover:shadow-lg transition-shadow duration-300"
+                className="relative flex flex-col bg-white rounded-xl mx-auto w-full sm:w-[85%] shadow-custom-card"
               >
-                <div className="px-4 py-6 sm:p-8 sm:pb-4">
+                {/* Nome do serviço no topo do card */}
+                <div className="absolute top-0 left-0 right-0 bg-black text-white text-center py-2 rounded-t-xl">
+                  <span className="text-sm font-bold uppercase">{serviceName}</span>
+                </div>
+
+                <div className="px-4 py-6 sm:p-8 sm:pb-4 mt-8">
                   <div className="grid items-center justify-center w-full grid-cols-1 text-left">
                     <div>
                       <h2 className="text-md font-semibold tracking-tight text-black lg:text-2xl">
@@ -198,7 +247,7 @@ const Professionals = () => {
                         Profissão: {professional.profession}
                       </p>
                     </div>
-                    <div className="mt-4 text-right">
+                    <div className="text-right">
                       <p>
                         <span className="text-3xl font-light tracking-tight text-green-700">
                           {professional.appointmentSpacing} min
@@ -225,10 +274,10 @@ const Professionals = () => {
           )}
         </div>
       </div>
+
       {selectedProfessional && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-md max-w-4xl w-full p-6 lg:p-8 flex flex-col space-y-6">
-            
             <div className="flex flex-col lg:flex-row gap-6">
               <div className="w-full lg:w-2/3">
                 <div className="bg-black text-white rounded-t-lg">
