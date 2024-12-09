@@ -4,7 +4,7 @@ import axios from "axios";
 import Navbar from "../../components/Navbar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { TbCalendarClock } from "react-icons/tb"; // Certifique-se de importar o ícone
+import { TbCalendarClock } from "react-icons/tb";
 
 type Professional = {
   id: number;
@@ -41,16 +41,24 @@ const Professionals = () => {
 
   useEffect(() => {
     if (serviceName) {
-      toast.info(`Serviço selecionado: ${serviceName}`, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        className: "text-sm font-medium bg-black text-white rounded-md",
-      });
+      toast.info(
+        <div className="text-left">
+          <span className="block">Serviço selecionado:</span>
+          <span className="block text-black font-bold">{serviceName}</span>
+        </div>,
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          className: "text-sm font-medium bg-black text-white rounded-md w-full lg:max-w-sm",
+          progressStyle: { backgroundColor: "black" },
+          icon: <TbCalendarClock className="text-black" />,
+        }
+      );
     }
   }, [serviceName]);
 
@@ -87,7 +95,8 @@ const Professionals = () => {
     }
 
     const dayOfWeekIndex = new Date(date).getDay();
-    const weekdayEnMap = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+    const weekdayEnMap = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+
     const selectedWeekdayEn = weekdayEnMap[dayOfWeekIndex];
 
     const schedule = professional.schedules.find(
@@ -177,34 +186,34 @@ const Professionals = () => {
             professionals.map((professional) => (
               <div
                 key={professional.id}
-                className="flex flex-col bg-white rounded-3xl mx-auto w-[90%] sm:w-[80%] shadow-md hover:shadow-lg transition-shadow duration-300"
+                className="flex flex-col bg-white rounded-xl mx-auto w-full sm:w-[85%] shadow-md hover:shadow-lg transition-shadow duration-300"
               >
-                <div className="px-6 py-8 sm:p-10 sm:pb-6">
+                <div className="px-4 py-6 sm:p-8 sm:pb-4">
                   <div className="grid items-center justify-center w-full grid-cols-1 text-left">
                     <div>
-                      <h2 className="text-lg font-medium tracking-tighter text-gray-600 lg:text-3xl">
+                      <h2 className="text-md font-semibold tracking-tight text-black lg:text-2xl">
                         {professional.name}
                       </h2>
-                      <p className="mt-2 text-sm text-gray-500">
+                      <p className="mt-1 text-sm text-gray-500">
                         Profissão: {professional.profession}
                       </p>
                     </div>
-                    <div className="mt-6 text-right">
+                    <div className="mt-4 text-right">
                       <p>
                         <span className="text-3xl font-light tracking-tight text-green-700">
-                           {professional.appointmentSpacing} min
+                          {professional.appointmentSpacing} min
                         </span>
                       </p>
                     </div>
                   </div>
                 </div>
-                <div className="flex px-6 pb-8 sm:px-8">
+                <div className="flex px-4 pb-6 sm:px-6">
                   <button
                     onClick={() => setSelectedProfessional(professional)}
-                    className="flex items-center justify-center w-full px-6 py-2.5 text-center text-white duration-200 bg-black border-2 border-black rounded-full hover:bg-transparent hover:border-black hover:text-black focus:outline-none focus-visible:outline-black text-sm focus-visible:ring-black"
+                    className="flex items-center justify-center w-full px-4 py-2 text-center text-white duration-200 bg-black border-2 border-black rounded-lg hover:bg-transparent hover:border-black hover:text-black focus:outline-none focus-visible:outline-black text-sm focus-visible:ring-black"
                   >
                     Reservar horário
-                    <TbCalendarClock className="ml-2 text-lg" />
+                    <TbCalendarClock className="ml-2 text-base" />
                   </button>
                 </div>
               </div>
@@ -218,56 +227,57 @@ const Professionals = () => {
       </div>
       {selectedProfessional && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-md max-w-4xl w-full p-8 flex flex-col">
-            <h2 className="text-2xl font-bold text-center mb-4">
-              Selecione a Data e o Horário para {selectedProfessional.name}
-            </h2>
-            <div className="flex flex-row gap-8">
-              <div className="w-2/3">
-                <div className="flex justify-between items-center mb-4">
-                  <button
-                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400"
-                    onClick={handlePreviousMonth}
-                  >
-                    {"<"}
-                  </button>
-                  <h3 className="text-xl font-semibold">
-                    {new Date(currentYear, currentMonth).toLocaleDateString("pt-BR", {
-                      month: "long",
-                      year: "numeric",
-                    })}
-                  </h3>
-                  <button
-                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400"
-                    onClick={handleNextMonth}
-                  >
-                    {">"}
-                  </button>
+          <div className="bg-white rounded-lg shadow-md max-w-4xl w-full p-6 lg:p-8 flex flex-col space-y-6">
+            
+            <div className="flex flex-col lg:flex-row gap-6">
+              <div className="w-full lg:w-2/3">
+                <div className="bg-black text-white rounded-t-lg">
+                  <div className="flex justify-between items-center px-4 py-3">
+                    <button
+                      className="px-3 py-2 bg-black text-white rounded-full hover:bg-customColorGray"
+                      onClick={handlePreviousMonth}
+                    >
+                      {"<"}
+                    </button>
+                    <h3 className="text-lg font-medium uppercase">
+                      {new Date(currentYear, currentMonth).toLocaleDateString("pt-BR", {
+                        month: "long",
+                        year: "numeric",
+                      }).replace(/(^\w)/, (match) => match.toUpperCase())}
+                    </h3>
+                    <button
+                      className="px-3 py-2 bg-black text-white rounded-full hover:bg-customColorGray"
+                      onClick={handleNextMonth}
+                    >
+                      {">"}
+                    </button>
+                  </div>
                 </div>
-                <div className="grid grid-cols-7 gap-4 mb-2 text-center font-bold">
+
+                <div className="grid grid-cols-7 gap-1 text-xs font-medium text-center bg-customColorGray text-white py-2 rounded-b-lg">
                   {["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"].map((day, index) => (
-                    <div key={index} className="text-gray-700">
+                    <div key={index} className="uppercase">
                       {day}
                     </div>
                   ))}
                 </div>
-                <div className="grid grid-cols-7 gap-4">
+                <div className="grid grid-cols-7 gap-1 mt-2">
                   {(() => {
                     const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
                     const days = [];
                     for (let i = 0; i < firstDayOfMonth; i++) {
-                      days.push(<div key={`empty-${i}`} className="w-full h-10"></div>);
+                      days.push(<div key={`empty-${i}`} className="h-10"></div>);
                     }
                     for (let day = 1; day <= daysInMonth; day++) {
                       days.push(
                         <button
                           key={day}
                           onClick={() => handleDateSelection(day)}
-                          className={`w-full h-10 rounded-full ${selectedDate ===
-                            `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
-                            ? "bg-purple-500 text-white"
-                            : "bg-gray-100 text-gray-700"
-                            } hover:bg-purple-200`}
+                          className={`h-10 rounded-lg text-black ${selectedDate ===
+                              `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+                              ? "bg-customColorGray text-white"
+                              : "bg-gray-100 hover:bg-gray-300"
+                            }`}
                         >
                           {day}
                         </button>
@@ -277,43 +287,47 @@ const Professionals = () => {
                   })()}
                 </div>
               </div>
-              <div className="w-1/3 bg-gray-100 p-6 rounded-lg overflow-y-auto max-h-64">
-                <h3 className="text-xl font-bold mb-4">Horários Disponíveis</h3>
-                {availableTimeSlots.length > 0 ? (
-                  <ul className="space-y-2">
-                    {availableTimeSlots.map((slot, index) => (
-                      <li
-                        key={index}
-                        onClick={() => setSelectedTimeSlot(slot)}
-                        className={`p-2 rounded-md cursor-pointer ${selectedTimeSlot === slot
-                          ? "bg-green-500 text-white"
-                          : "bg-green-100 text-green-700 hover:bg-green-200"
-                          }`}
-                      >
-                        {slot}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-gray-500">Nenhum horário disponível</p>
-                )}
+              <div className="w-full lg:w-1/3 bg-gray-50 p-4 rounded-lg shadow-inner flex flex-col justify-between">
+                <div className="mb-4">
+                  <h3 className="text-lg font-bold text-black">Horários Disponíveis</h3>
+                  {availableTimeSlots.length > 0 ? (
+                    <ul className="space-y-2 overflow-y-auto max-h-40 lg:max-h-64 pr-2">
+                      {availableTimeSlots.map((slot, index) => (
+                        <li
+                          key={index}
+                          onClick={() => setSelectedTimeSlot(slot)}
+                          className={`p-2 text-sm text-center rounded-lg cursor-pointer ${selectedTimeSlot === slot
+                              ? "bg-customColorGray text-white"
+                              : "bg-green-200 text-black hover:bg-gray-300"
+                            }`}
+                        >
+                          {slot}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-gray-500">Nenhum horário disponível</p>
+                  )}
+                </div>
+                <div className="flex justify-between items-center">
+                  <button
+                    onClick={closeModal}
+                    className="px-4 py-2 text-sm bg-gray-300 text-black rounded-md hover:bg-gray-400"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={handleConfirm}
+                    disabled={isConfirmButtonDisabled}
+                    className={`px-4 py-2 text-sm rounded-md text-white ${isConfirmButtonDisabled
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-black hover:bg-customColorGray"
+                      }`}
+                  >
+                    Confirmar
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="flex justify-end gap-4 mt-6">
-              <button
-                onClick={closeModal}
-                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleConfirm}
-                disabled={isConfirmButtonDisabled}
-                className={`px-4 py-2 rounded-md text-white ${isConfirmButtonDisabled ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
-                  }`}
-              >
-                Confirmar
-              </button>
             </div>
           </div>
         </div>

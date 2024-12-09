@@ -7,6 +7,7 @@ export default {
     extend: {
       colors: {
         customGray: '#f2f2f2', // Nome personalizado para a cor
+        customColorGray: '#2c2c2c',
       },
     },
   },

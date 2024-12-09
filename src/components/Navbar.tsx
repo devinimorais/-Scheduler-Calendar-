@@ -1,22 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { FaHome, FaServicestack, FaInfoCircle, FaBars, FaTimes } from "react-icons/fa";
+import { FaBars, FaTimes } from "react-icons/fa";
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-
-  const menuItems = [
-    { name: "Início", path: "/home", icon: <FaHome /> },
-    { name: "Serviços", path: "/services", icon: <FaServicestack /> },
-    { name: "Sobre", path: "/about", icon: <FaInfoCircle /> },
-  ];
-
-  const handleNavigation = (path: string) => {
-    navigate(path);
-    setIsMenuOpen(false);
-  };
 
   const isHomePage = location.pathname === "/home";
 
@@ -34,23 +23,6 @@ const Navbar: React.FC = () => {
             className="flex-shrink-0 text-2xl font-bold cursor-pointer tracking-widest hover:text-gray-300"
           >
             Agendador
-          </div>
-
-          {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-8">
-            {menuItems.map((item) => (
-              <button
-                key={item.name}
-                onClick={() => handleNavigation(item.path)}
-                className="flex items-center space-x-2 text-lg font-medium relative group"
-              >
-                <span className="text-xl">{item.icon}</span>
-                <span>{item.name}</span>
-                <span
-                  className="absolute bottom-0 left-0 w-0 h-[2px] bg-white transition-all duration-300 group-hover:w-full"
-                ></span>
-              </button>
-            ))}
           </div>
 
           {/* Mobile Menu Button */}
@@ -96,19 +68,6 @@ const Navbar: React.FC = () => {
               <FaTimes className="h-6 w-6" />
             </button>
           </div>
-          {menuItems.map((item) => (
-            <button
-              key={item.name}
-              onClick={(event) => {
-                event.stopPropagation(); // Impede o clique de fechar o Drawer
-                handleNavigation(item.path);
-              }}
-              className="flex items-center space-x-4 text-lg font-medium hover:text-gray-300 transition-all"
-            >
-              <span className="text-xl">{item.icon}</span>
-              <span>{item.name}</span>
-            </button>
-          ))}
         </div>
       </div>
     </nav>

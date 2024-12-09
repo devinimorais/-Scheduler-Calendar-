@@ -1,7 +1,7 @@
 import React from "react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import "./index.css";
 
 // Importação das páginas
@@ -15,8 +15,8 @@ import BookTime from "./pages/BookTimes/Book times";
 // Definição das rotas
 const router = createBrowserRouter([
   {
-    path: "/", // Página inicial (Login)
-    element: <Login />,
+    path: "/", // Redireciona para "/services/:serviceId"
+    element: <Navigate to="/services/1" replace />, // Substitua "1" pelo ID dinâmico desejado
   },
   {
     path: "/home", // Página inicial após login
