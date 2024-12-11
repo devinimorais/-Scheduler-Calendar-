@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../../components/Navbar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { TbCalendarClock } from "react-icons/tb";
+import { Appointment } from './../../api/appointments';
+import { newDate } from "react-datepicker/dist/date_utils";
+
 
 type Professional = {
   id: number;
@@ -19,6 +22,8 @@ type Professional = {
   }[];
 };
 
+
+
 const Professionals = () => {
   const location = useLocation();
   const { professionals, serviceName }: { professionals: Professional[]; serviceName: string } =
@@ -27,10 +32,15 @@ const Professionals = () => {
   const [selectedProfessional, setSelectedProfessional] = useState<Professional | null>(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
-  const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<Date[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const [searchTerm, setSearchTerm] = useState<string>(""); // Controla o texto digitado no campo de busca
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState<string>(""); // Controla o texto 
+
   const [searchOpen, setSearchOpen] = useState<boolean>(false); // Controla se o campo de busca está aberto
   const searchRef = useRef<HTMLDivElement>(null); // Referência ao contêiner do search
 
@@ -38,7 +48,12 @@ const Professionals = () => {
 
   // Variável para desabilitar o botão "Confirmar"
   const isConfirmButtonDisabled = !selectedDate || !selectedTimeSlot || !selectedProfessional;
-  
+
+
+
+
+
+
   useEffect(() => {
     if (serviceName) {
       toast.info(
@@ -59,8 +74,13 @@ const Professionals = () => {
           icon: <TbCalendarClock className="text-black" />,
         }
       );
+      fetchAppointments();
     }
+
   }, [serviceName]);
+
+
+
 
   const handlePreviousMonth = () => {
     if (currentMonth === 0) {
@@ -95,6 +115,7 @@ const Professionals = () => {
     }
 
     const dayOfWeekIndex = new Date(date).getDay();
+
     const weekdayEnMap = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
     const selectedWeekdayEn = weekdayEnMap[dayOfWeekIndex];
@@ -107,27 +128,37 @@ const Professionals = () => {
       setAvailableTimeSlots([]);
       return;
     }
-
     const { startTime, endTime } = schedule;
     const duration = parseInt(professional.appointmentSpacing, 10) || 30;
     const correctedEndTime = endTime === "00:00" ? "23:59" : endTime;
-    const start = new Date(`1970-01-01T${startTime}:00`);
-    const end = new Date(`1970-01-01T${correctedEndTime}:00`);
+
+    // Garantir que as datas sejam criadas corretamente usando o fuso horário local
+    const start = new Date(
+      `${date}T${startTime}:00`
+    );
+
+    const end = new Date(
+      `${date}T${correctedEndTime}:00`
+    );
 
     if (start >= end) {
       setAvailableTimeSlots([]);
       return;
     }
 
-    const slots: string[] = [];
+    const slots = [];
     let current = new Date(start);
     while (current < end) {
-      slots.push(current.toTimeString().slice(0, 5));
+      slots.push(new Date(current));
       current.setMinutes(current.getMinutes() + duration);
     }
 
     setAvailableTimeSlots(slots);
   };
+
+  const verifyAppointment = (time: Date) => {
+
+  }
 
   const createAppointment = async () => {
     if (!selectedDate || !selectedTimeSlot || !selectedProfessional) {
@@ -143,10 +174,14 @@ const Professionals = () => {
           scheduledDate: new Date(`${selectedDate}T${selectedTimeSlot}:00Z`).toISOString(),
           description: `Agendamento com ${selectedProfessional.name}`,
           status: "pending",
-          userId: 3,
+          userId: selectedProfessional.id,
           ticketId: 12,
         },
+
       });
+
+
+
 
       toast.success("Agendamento criado com sucesso!");
       closeModal();
@@ -158,7 +193,7 @@ const Professionals = () => {
       }
     }
   };
-
+  console.log(selectedProfessional);
   const closeModal = () => {
     setSelectedProfessional(null);
     setSelectedDate("");
@@ -167,6 +202,20 @@ const Professionals = () => {
 
   const handleConfirm = () => {
     createAppointment();
+  };
+  const fetchAppointments = async () => {
+    try {
+      const response = await axios.post("https://api.tzsexpertacademy.com/bypass/", {
+        url: "https://api.tzsexpertacademy.com/appointments",
+        method: "GET",
+      });
+      setAppointments(response.data.data);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error('Erro ao buscar os agendamentos:', err.message);
+        setError(err.message);
+      }
+    }
   };
 
   // Fecha o campo de busca ao clicar fora
@@ -186,6 +235,14 @@ const Professionals = () => {
   const filteredProfessionals = professionals.filter((professional) =>
     professional.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  function isTimeSchaduled(time: Date) {
+    console.log(time, appointments)
+    return appointments.map(date => date.scheduledDate
+    ).filter((date) => new Date(date).getDate() === time.getDate() && new Date(date).getMonth() + 1 === time.getMonth() + 1 && new Date(date).getMinutes() === time.getMinutes() && new Date(date).getUTCFullYear() === time.getUTCFullYear()).length > 0;
+  }
+
+
 
   return (
     <div className="relative bg-customGray min-h-screen">
@@ -323,9 +380,9 @@ const Professionals = () => {
                           key={day}
                           onClick={() => handleDateSelection(day)}
                           className={`h-10 rounded-lg text-black ${selectedDate ===
-                              `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
-                              ? "bg-customColorGray text-white"
-                              : "bg-gray-100 hover:bg-gray-300"
+                            `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+                            ? "bg-customColorGray text-white"
+                            : "bg-gray-100 hover:bg-gray-300"
                             }`}
                         >
                           {day}
@@ -344,14 +401,30 @@ const Professionals = () => {
                       {availableTimeSlots.map((slot, index) => (
                         <li
                           key={index}
-                          onClick={() => setSelectedTimeSlot(slot)}
-                          className={`p-2 text-sm text-center rounded-lg cursor-pointer ${selectedTimeSlot === slot
+                          onClick={() => !isTimeSchaduled(slot) && setSelectedTimeSlot(slot.toTimeString().slice(0, 5))}
+                          className={`p-2 text-sm text-center rounded-lg ${isTimeSchaduled(slot)
+                            ? "bg-gray-100 text-gray-400 cursor-not-allowed hover:cursor-not-allowed"
+                            : selectedTimeSlot === slot.toTimeString().slice(0, 5)
                               ? "bg-customColorGray text-white"
-                              : "bg-green-200 text-black hover:bg-gray-300"
+                              : "bg-green-200 text-black hover:bg-gray-300 cursor-pointer"
                             }`}
+                          style={{ cursor: isTimeSchaduled(slot) ? "not-allowed" : "pointer" }}
+                          title={isTimeSchaduled(slot) ? "Unavailable" : "Select time"}
                         >
-                          {slot}
+                          {isTimeSchaduled(slot) ? (
+                            <input
+                              type="text"
+                              value={slot.toTimeString().slice(0, 5)}
+                              disabled
+                              className="bg-transparent text-center line-through text-gray-400 border-none pointer-events-none"
+                              style={{ cursor: "not-allowed" }}
+                            />
+                          ) : (
+                            slot.toTimeString().slice(0, 5)
+                          )}
                         </li>
+
+
                       ))}
                     </ul>
                   ) : (
@@ -369,8 +442,8 @@ const Professionals = () => {
                     onClick={handleConfirm}
                     disabled={isConfirmButtonDisabled}
                     className={`px-4 py-2 text-sm rounded-md text-white ${isConfirmButtonDisabled
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-black hover:bg-customColorGray"
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-black hover:bg-customColorGray"
                       }`}
                   >
                     Confirmar

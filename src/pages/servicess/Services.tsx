@@ -83,15 +83,14 @@ const Services = () => {
       <Navbar />
       <ToastContainer />
       <div className="p-6 lg:p-8 mt-16 relative">
-        {/* Campo de busca */}
+
         <div className="flex justify-end mb-6" ref={searchRef}>
           <div
-            className={`relative ${
-              searchOpen ? "w-[270px]" : "w-[60px]"
-            } h-[60px] bg-black shadow-lg rounded-full flex items-center transition-all duration-300`}
-            onClick={() => setSearchOpen(true)} // Abre o campo ao clicar
+            className={`relative ${searchOpen ? "w-[270px]" : "w-[60px]"
+              } h-[60px] bg-black shadow-lg rounded-full flex items-center transition-all duration-300`}
+            onClick={() => setSearchOpen(true)}
           >
-            {/* Ícone de busca */}
+
             <div className="flex items-center justify-center fill-white pl-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

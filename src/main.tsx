@@ -12,11 +12,11 @@ import Professionals from "./pages/professionals/Professionals";
 import Home from "./pages/home/Home";
 import BookTime from "./pages/BookTimes/Book times";
 
-// Definição das rotas
+
 const router = createBrowserRouter([
   {
     path: "/", // Redireciona para "/services/:serviceId"
-    element: <Navigate to="/services/1" replace />, // Substitua "1" pelo ID dinâmico desejado
+    element: <Navigate to="/services/16" replace />, // Substitua "1" pelo ID dinâmico desejado
   },
   {
     path: "/home", // Página inicial após login
@@ -38,6 +38,8 @@ const router = createBrowserRouter([
     path: "/bookTime", // Página de reserva de horários
     element: <BookTime />,
   },
+
+
 ]);
 
 // Ponto de montagem do React
