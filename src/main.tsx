@@ -4,8 +4,8 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import "./index.css";
 
-// Importação das páginas
-import Login from "./pages/login/Login";
+
+
 import Scheduleduler from "./pages/scheduleduler/Scheduleduler";
 import Services from "./pages/servicess/Services";
 import Professionals from "./pages/professionals/Professionals";
