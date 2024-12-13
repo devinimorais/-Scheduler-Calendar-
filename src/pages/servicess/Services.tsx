@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -28,6 +28,9 @@ const Services = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const searchRef = useRef<HTMLDivElement>(null); // Referência ao contêiner do search
   const navigate = useNavigate();
+
+  const [searchParams] = useSearchParams();
+  const ticketId = searchParams.get('ticketId');
 
   useEffect(() => {
     const fetchServices = async () => {
