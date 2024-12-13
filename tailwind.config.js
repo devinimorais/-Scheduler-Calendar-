@@ -10,7 +10,7 @@ export default {
         customColorGray: '#2c2c2c',
       },
       boxShadow: {
-        'custom-card': '0 10px 10px rgba(0, 0, 0, 0.4), 0 7px 1px rgba(0, 0, 0, 0.3)', 
+        'custom-card': '8px 8px 0 #000;', 
       },
     },
   },
