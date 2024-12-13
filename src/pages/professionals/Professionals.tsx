@@ -38,16 +38,17 @@ const Professionals = () => {
   const [appointments, setAppointments] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState<string>(""); // Controla o texto 
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const [searchOpen, setSearchOpen] = useState<boolean>(false); // Controla se o campo de busca está aberto
-  const searchRef = useRef<HTMLDivElement>(null); // Referência ao contêiner do search
+  const [searchOpen, setSearchOpen] = useState<boolean>(false);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
-  // Variável para desabilitar o botão "Confirmar"
   const isConfirmButtonDisabled = !selectedDate || !selectedTimeSlot || !selectedProfessional;
 
+  const [searchParams] = useSearchParams();
+  const ticketId = searchParams.get('ticketId');
 
 
 
@@ -78,6 +79,18 @@ const Professionals = () => {
 
   }, [serviceName]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setSearchOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
 
   const handlePreviousMonth = () => {
@@ -130,7 +143,7 @@ const Professionals = () => {
     const duration = parseInt(professional.appointmentSpacing, 10) || 30;
     const correctedEndTime = endTime === "00:00" ? "23:59" : endTime;
 
-    // Garantir que as datas sejam criadas corretamente usando o fuso horário local
+
     const start = new Date(
       `${date}T${startTime}:00`
     );
@@ -154,8 +167,6 @@ const Professionals = () => {
     setAvailableTimeSlots(slots);
   };
 
-  const [searchParams] = useSearchParams();
-  const ticketId = searchParams.get('ticketId');
 
 
   const createAppointment = async () => {
@@ -219,19 +230,7 @@ const Professionals = () => {
     }
   };
 
-  // Fecha o campo de busca ao clicar fora
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-        setSearchOpen(false);
-      }
-    };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   const filteredProfessionals = professionals.filter((professional) =>
     professional.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -248,17 +247,17 @@ const Professionals = () => {
 
   return (
     <div className="relative bg-customGray min-h-screen">
-      {/* <Navbar /> */}
+
 
       <div className="p-6 lg:p-8 mt-16 relative">
-        {/* Campo de busca */}
+
         <div className="flex justify-end mb-6" ref={searchRef}>
           <div
             className={`relative ${searchOpen ? "w-[270px]" : "w-[60px]"
               } h-[60px] bg-black shadow-lg rounded-full flex items-center transition-all duration-300`}
-            onClick={() => setSearchOpen(true)} // Abre o campo ao clicar
+            onClick={() => setSearchOpen(true)}
           >
-            {/* Ícone de busca */}
+
             <div className="flex items-center justify-center fill-white pl-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -270,7 +269,7 @@ const Professionals = () => {
                 <path d="M18.9,16.776A10.539,10.539,0,1,0,16.776,18.9l5.1,5.1L24,21.88ZM10.5,18A7.5,7.5,0,1,1,18,10.5,7.507,7.507,0,0,1,10.5,18Z"></path>
               </svg>
             </div>
-            {/* Input de busca */}
+
             {searchOpen && (
               <input
                 type="text"
@@ -291,7 +290,7 @@ const Professionals = () => {
                 key={professional.id}
                 className="relative flex flex-col bg-white rounded-xl mx-auto w-full sm:w-[85%] shadow-custom-card"
               >
-                {/* Nome do serviço no topo do card */}
+
                 <div className="absolute top-0 left-0 right-0 bg-black text-white text-center py-2 rounded-t-xl">
                   <span className="text-sm font-bold uppercase">{serviceName}</span>
                 </div>
