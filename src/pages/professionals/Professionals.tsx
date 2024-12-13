@@ -38,7 +38,7 @@ const Professionals = () => {
   const [appointments, setAppointments] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState<string>(""); 
+  const [searchTerm, setSearchTerm] = useState<string>(""); // Controla o texto 
 
   const [searchOpen, setSearchOpen] = useState<boolean>(false); 
   const searchRef = useRef<HTMLDivElement>(null); 
