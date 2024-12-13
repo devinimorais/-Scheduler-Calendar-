@@ -35,7 +35,6 @@ const Professionals = () => {
   const [availableTimeSlots, setAvailableTimeSlots] = useState<Date[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const [searchParams, setSearchParams] = useSearchParams();
   const [appointments, setAppointments] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -78,7 +77,6 @@ const Professionals = () => {
     }
 
   }, [serviceName]);
-
 
 
 
@@ -156,13 +154,14 @@ const Professionals = () => {
     setAvailableTimeSlots(slots);
   };
 
-  const verifyAppointment = (time: Date) => {
+  const [searchParams] = useSearchParams();
+  const ticketId = searchParams.get('ticketId');
 
-  }
 
   const createAppointment = async () => {
     if (!selectedDate || !selectedTimeSlot || !selectedProfessional) {
       toast.error("Por favor, selecione uma data, horário e profissional.");
+
       return;
     }
 
@@ -175,7 +174,7 @@ const Professionals = () => {
           description: `Agendamento com ${selectedProfessional.name}`,
           status: "pending",
           userId: selectedProfessional.id,
-          ticketId: 12,
+          ticketId: ticketId,
         },
 
       });
@@ -203,6 +202,8 @@ const Professionals = () => {
   const handleConfirm = () => {
     createAppointment();
   };
+
+
   const fetchAppointments = async () => {
     try {
       const response = await axios.post("https://api.tzsexpertacademy.com/bypass/", {
@@ -244,9 +245,10 @@ const Professionals = () => {
 
 
 
+
   return (
     <div className="relative bg-customGray min-h-screen">
-      <Navbar />
+      {/* <Navbar /> */}
 
       <div className="p-6 lg:p-8 mt-16 relative">
         {/* Campo de busca */}

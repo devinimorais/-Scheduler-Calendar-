@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -66,8 +66,17 @@ const Services = () => {
     };
   }, []);
 
+  const [searchParams] = useSearchParams();
+  const empresaId = searchParams.get('empresaId');
+  const ticketId = searchParams.get('ticketId');
+
+
+
   const handleSelectService = (service: Service) => {
-    navigate("/professionals", { state: { professionals: service.users, serviceName: service.name } });
+
+    navigate(`/professionals?ticketId=${ticketId}`, {
+      state: { professionals: service.users, serviceName: service.name },
+    });
   };
 
   if (loading) {
@@ -78,9 +87,18 @@ const Services = () => {
     );
   }
 
+  if (!ticketId?.trim()) {
+    return (
+      <div>
+        Ticket não existente!
+      </div>
+    );
+  }
+
+
   return (
     <div className="relative bg-customGray min-h-screen">
-      <Navbar />
+      {/* <Navbar /> */}
       <ToastContainer />
       <div className="p-6 lg:p-8 mt-16 relative">
 
