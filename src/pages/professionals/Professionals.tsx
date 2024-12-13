@@ -38,14 +38,12 @@ const Professionals = () => {
   const [appointments, setAppointments] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState<string>(""); // Controla o texto 
+  const [searchTerm, setSearchTerm] = useState<string>(""); 
 
-  const [searchOpen, setSearchOpen] = useState<boolean>(false); // Controla se o campo de busca está aberto
-  const searchRef = useRef<HTMLDivElement>(null); // Referência ao contêiner do search
+  const [searchOpen, setSearchOpen] = useState<boolean>(false); 
+  const searchRef = useRef<HTMLDivElement>(null); 
 
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-  // Variável para desabilitar o botão "Confirmar"
   const isConfirmButtonDisabled = !selectedDate || !selectedTimeSlot || !selectedProfessional;
 
 
@@ -111,13 +109,9 @@ const Professionals = () => {
       setAvailableTimeSlots([]);
       return;
     }
-
     const dayOfWeekIndex = new Date(date).getDay();
-
     const weekdayEnMap = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
-
     const selectedWeekdayEn = weekdayEnMap[dayOfWeekIndex];
-
     const schedule = professional.schedules.find(
       (s) => s.weekdayEn.toLowerCase() === selectedWeekdayEn
     );
@@ -129,8 +123,6 @@ const Professionals = () => {
     const { startTime, endTime } = schedule;
     const duration = parseInt(professional.appointmentSpacing, 10) || 30;
     const correctedEndTime = endTime === "00:00" ? "23:59" : endTime;
-
-    // Garantir que as datas sejam criadas corretamente usando o fuso horário local
     const start = new Date(
       `${date}T${startTime}:00`
     );
@@ -218,8 +210,6 @@ const Professionals = () => {
       }
     }
   };
-
-  // Fecha o campo de busca ao clicar fora
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
@@ -247,18 +237,14 @@ const Professionals = () => {
 
 
   return (
-    <div className="relative bg-customGray min-h-screen">
-      {/* <Navbar /> */}
-
+    <div className="relative  min-h-screen">
       <div className="p-6 lg:p-8 mt-16 relative">
-        {/* Campo de busca */}
         <div className="flex justify-end mb-6" ref={searchRef}>
           <div
             className={`relative ${searchOpen ? "w-[270px]" : "w-[60px]"
-              } h-[60px] bg-black shadow-lg rounded-full flex items-center transition-all duration-300`}
-            onClick={() => setSearchOpen(true)} // Abre o campo ao clicar
+            } h-[40px] bg-black shadow-lg rounded-lg flex items-center transition-all duration-300 border border-solid border-black`}
+          onClick={() => setSearchOpen(true)} 
           >
-            {/* Ícone de busca */}
             <div className="flex items-center justify-center fill-white pl-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -270,7 +256,6 @@ const Professionals = () => {
                 <path d="M18.9,16.776A10.539,10.539,0,1,0,16.776,18.9l5.1,5.1L24,21.88ZM10.5,18A7.5,7.5,0,1,1,18,10.5,7.507,7.507,0,0,1,10.5,18Z"></path>
               </svg>
             </div>
-            {/* Input de busca */}
             {searchOpen && (
               <input
                 type="text"
@@ -289,24 +274,29 @@ const Professionals = () => {
             filteredProfessionals.map((professional) => (
               <div
                 key={professional.id}
-                className="relative flex flex-col bg-white rounded-xl mx-auto w-full sm:w-[85%] shadow-custom-card"
+                className="flex flex-col bg-white mx-auto w-full sm:w-[85%] shadow-custom-card border border-solid border-black rounded-lg"
               >
-                {/* Nome do serviço no topo do card */}
-                <div className="absolute top-0 left-0 right-0 bg-black text-white text-center py-2 rounded-t-xl">
-                  <span className="text-sm font-bold uppercase">{serviceName}</span>
-                </div>
-
-                <div className="px-4 py-6 sm:p-8 sm:pb-4 mt-8">
+                <div className="px-4 py-6 sm:p-8 sm:pb-4">
                   <div className="grid items-center justify-center w-full grid-cols-1 text-left">
-                    <div>
-                      <h2 className="text-md font-semibold tracking-tight text-black lg:text-2xl">
-                        {professional.name}
-                      </h2>
-                      <p className="mt-1 text-sm text-gray-500">
-                        Profissão: {professional.profession}
-                      </p>
+                    <div className="flex items-center space-x-4">
+                      <div className="flex items-center justify-center w-14 h-14 text-white bg-black rounded-full">
+                        {professional.name
+                          .split(" ")
+                          .map((word) => word.charAt(0))
+                          .join("")
+                          .slice(0, 2)
+                          .toUpperCase()}
+                      </div>
+                      <div>
+                        <h2 className="text-lg font-semibold tracking-tight text-black lg:text-2xl">
+                          {professional.name}
+                        </h2>
+                        <p className="text-lg text-gray-500">
+                          Profissão: {professional.profession}
+                        </p>
+                      </div>
                     </div>
-                    <div className="text-right">
+                    <div className="mt-1 text-right">
                       <p>
                         <span className="text-3xl font-light tracking-tight text-green-700">
                           {professional.appointmentSpacing} min
@@ -315,6 +305,7 @@ const Professionals = () => {
                     </div>
                   </div>
                 </div>
+
                 <div className="flex px-4 pb-6 sm:px-6">
                   <button
                     onClick={() => setSelectedProfessional(professional)}
@@ -332,6 +323,7 @@ const Professionals = () => {
             </p>
           )}
         </div>
+
       </div>
 
       {selectedProfessional && (

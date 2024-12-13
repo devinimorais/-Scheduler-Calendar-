@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -66,17 +66,8 @@ const Services = () => {
     };
   }, []);
 
-  const [searchParams] = useSearchParams();
-  const empresaId = searchParams.get('empresaId');
-  const ticketId = searchParams.get('ticketId');
-
-
-
   const handleSelectService = (service: Service) => {
-
-    navigate(`/professionals?ticketId=${ticketId}`, {
-      state: { professionals: service.users, serviceName: service.name },
-    });
+    navigate("/professionals", { state: { professionals: service.users, serviceName: service.name } });
   };
 
   if (loading) {
@@ -87,28 +78,19 @@ const Services = () => {
     );
   }
 
-  if (!ticketId?.trim()) {
-    return (
-      <div>
-        Ticket não existente!
-      </div>
-    );
-  }
-
-
   return (
-    <div className="relative bg-customGray min-h-screen">
-      {/* <Navbar /> */}
+    <div className="relative  min-h-screen">
       <ToastContainer />
       <div className="p-6 lg:p-8 mt-16 relative">
-
+        {/* Campo de busca */}
         <div className="flex justify-end mb-6" ref={searchRef}>
           <div
             className={`relative ${searchOpen ? "w-[270px]" : "w-[60px]"
-              } h-[60px] bg-black shadow-lg rounded-full flex items-center transition-all duration-300`}
-            onClick={() => setSearchOpen(true)}
+              } h-[40px] bg-black shadow-lg rounded-lg flex items-center transition-all duration-300 border border-solid border-black`}
+            onClick={() => setSearchOpen(true)} // Abre o campo ao clicar
           >
 
+            {/* Ícone de busca */}
             <div className="flex items-center justify-center fill-white pl-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -143,26 +125,35 @@ const Services = () => {
             .map((service) => (
               <div
                 key={service.id}
-                className="flex flex-col bg-white rounded-xl mx-auto w-full sm:w-[85%] shadow-custom-card"
+                className="flex flex-col bg-white mx-auto w-full sm:w-[85%] shadow-custom-card border border-solid border-black rounded-lg"
               >
                 {/* ID do serviço no topo do card */}
-                <div className="bg-black text-white text-center py-1 rounded-t-xl">
-                  <span className="text-sm font-bold uppercase">
-                    ID do serviço: {service.id}
-                  </span>
-                </div>
+
 
                 <div className="px-4 py-6 sm:p-8 sm:pb-4">
                   <div className="grid items-center justify-center w-full grid-cols-1 text-left">
-                    <div>
-                      <h2 className="text-lg font-semibold tracking-tight text-black lg:text-2xl">
-                        {service.name}
-                      </h2>
-                      <p className=" text-lg text-gray-500">
-                        {service.description.charAt(0).toUpperCase() +
-                          service.description.slice(1)}
-                      </p>
+                    <div className="flex items-center space-x-4">
+                      {/* Círculo com as iniciais do serviço */}
+                      <div className="flex items-center justify-center w-14 h-14 text-white bg-black rounded-full">
+                        {service.name
+                          .split(" ")
+                          .map((word) => word.charAt(0))
+                          .join("")
+                          .slice(0, 2)
+                          .toUpperCase()}
+                      </div>
+                      {/* Nome e descrição do serviço */}
+                      <div>
+                        <h2 className="text-lg font-semibold tracking-tight text-black lg:text-2xl">
+                          {service.name}
+                        </h2>
+                        <p className="text-lg text-gray-500">
+                          {service.description.charAt(0).toUpperCase() +
+                            service.description.slice(1)}
+                        </p>
+                      </div>
                     </div>
+                    {/* Preço e duração */}
                     <div className="mt-1 text-right">
                       <p>
                         <span className="text-3xl font-light tracking-tight text-green-700">
@@ -176,6 +167,7 @@ const Services = () => {
                     </div>
                   </div>
                 </div>
+
                 <div className="flex px-4 pb-6 sm:px-6">
                   <button
                     onClick={() => handleSelectService(service)}
