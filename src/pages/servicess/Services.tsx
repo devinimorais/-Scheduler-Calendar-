@@ -70,7 +70,9 @@ const Services = () => {
   }, []);
 
   const handleSelectService = (service: Service) => {
-    navigate("/professionals", { state: { professionals: service.users, serviceName: service.name } });
+    navigate(`/professionals?ticketId=${ticketId}`, {
+      state: { professionals: service.users, serviceName: service.name }
+    });
   };
 
   if (loading) {
