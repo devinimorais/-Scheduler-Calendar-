@@ -12,7 +12,7 @@ const Home: React.FC = () => {
 
   return (
     <div
-      className="relative bg-cover bg-center text-white h-[300px] sm:h-[400px] md:h-[500px]"
+      className="relative bg-cover bg-center text-white h-[300px] sm:h-[400px] md:h-[500px] "
       style={{
         backgroundImage: `url(${HeroImage})`,
       }}

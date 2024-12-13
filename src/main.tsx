@@ -4,8 +4,8 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import "./index.css";
 
-// Importação das páginas
-import Login from "./pages/login/Login";
+
+
 import Scheduleduler from "./pages/scheduleduler/Scheduleduler";
 import Services from "./pages/servicess/Services";
 import Professionals from "./pages/professionals/Professionals";
@@ -15,27 +15,27 @@ import BookTime from "./pages/BookTimes/Book times";
 
 const router = createBrowserRouter([
   {
-    path: "/", // Redireciona para "/services/:serviceId"
-    element: <Navigate to="/services/16" replace />, // Substitua "1" pelo ID dinâmico desejado
+    path: "/",
+    element: <Navigate to="/services/16" replace />,
   },
   {
-    path: "/home", // Página inicial após login
+    path: "/home",
     element: <Home />,
   },
   {
-    path: "/scheduleduler", // Página de agendamento
+    path: "/scheduleduler",
     element: <Scheduleduler />,
   },
   {
-    path: "/services/:serviceId", // Página de serviços com ID dinâmico
+    path: "/services/:serviceId",
     element: <Services />,
   },
   {
-    path: "/professionals", // Página de profissionais
+    path: "/professionals",
     element: <Professionals />,
   },
   {
-    path: "/bookTime", // Página de reserva de horários
+    path: "/bookTime",
     element: <BookTime />,
   },
 
