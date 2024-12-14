@@ -244,13 +244,13 @@ const Professionals = () => {
 
   return (
 
-    <div className="relative  min-h-screen">
+    <div className="relative  min-h-screen ">
       <div className="p-6 lg:p-8 mt-16 relative">
         <div className="flex justify-end mb-6" ref={searchRef}>
           <div
             className={`relative ${searchOpen ? "w-[270px]" : "w-[60px]"
-            } h-[40px] bg-black shadow-lg rounded-lg flex items-center transition-all duration-300 border border-solid border-black`}
-          onClick={() => setSearchOpen(true)} 
+              } h-[40px] bg-black shadow-lg rounded-lg flex items-center transition-all duration-300 border border-solid border-black`}
+            onClick={() => setSearchOpen(true)}
           >
 
             <div className="flex items-center justify-center fill-white pl-4">
@@ -264,7 +264,7 @@ const Professionals = () => {
                 <path d="M18.9,16.776A10.539,10.539,0,1,0,16.776,18.9l5.1,5.1L24,21.88ZM10.5,18A7.5,7.5,0,1,1,18,10.5,7.507,7.507,0,0,1,10.5,18Z"></path>
               </svg>
             </div>
- 
+
             {searchOpen && (
               <input
                 type="text"
@@ -337,10 +337,10 @@ const Professionals = () => {
       </div>
 
       {selectedProfessional && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-md max-w-4xl w-full p-6 lg:p-8 flex flex-col space-y-6">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ">
+          <div className="bg-white rounded-lg  max-w-4xl w-full p-6 lg:p-8 flex flex-col space-y-6 shadow-custom-card">
             <div className="flex flex-col lg:flex-row gap-6">
-              <div className="w-full lg:w-2/3">
+              <div className="w-full lg:w-2/3 ">
                 <div className="bg-black text-white rounded-t-lg">
                   <div className="flex justify-between items-center px-4 py-3">
                     <button
@@ -364,7 +364,7 @@ const Professionals = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-7 gap-1 text-xs font-medium text-center bg-customColorGray text-white py-2 rounded-b-lg">
+                <div className="grid grid-cols-7 gap-1 text-xs font-medium text-center bg-customColorGray text-white py-2 rounded-b-lg ">
                   {["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"].map((day, index) => (
                     <div key={index} className="uppercase">
                       {day}
@@ -399,7 +399,17 @@ const Professionals = () => {
               </div>
               <div className="w-full lg:w-1/3 bg-gray-50 p-4 rounded-lg shadow-inner flex flex-col justify-between">
                 <div className="mb-4">
-                  <h3 className="text-lg font-bold text-black">Horários Disponíveis</h3>
+                  <div className="rounded-md overflow-hidden">
+                    <h3 className="text-lg font-bold text-white text-center bg-black p-3">
+                      Horários Disponíveis
+                    </h3>
+                    {selectedProfessional && (
+                      <p className="text-sm text-white text-center bg-customColorGray p-2">
+                        <span className="font-normal">{serviceName}</span> |{" "}
+                        <span className="font-normal">{selectedProfessional.name}</span>
+                      </p>
+                    )}
+                  </div>
                   {availableTimeSlots.length > 0 ? (
                     <ul className="space-y-2 overflow-y-auto max-h-40 lg:max-h-64 pr-2">
                       {availableTimeSlots.map((slot, index) => (
@@ -408,7 +418,10 @@ const Professionals = () => {
                           onClick={() => !isTimeSchaduled(slot) && setSelectedTimeSlot(slot.toTimeString().slice(0, 5))}
                           className={`p-2 text-sm text-center rounded-lg ${isTimeSchaduled(slot)
                             ? "bg-gray-100 text-gray-400 cursor-not-allowed hover:cursor-not-allowed"
-                            : selectedTimeSlot === slot.toTimeString().slice(0, 5)
+                            : selectedTimeSlot === slot
+                              .toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
+                              .replace(":", "H")
+                              .concat("min")
                               ? "bg-customColorGray text-white"
                               : "bg-green-200 text-black hover:bg-gray-300 cursor-pointer"
                             }`}
@@ -418,21 +431,30 @@ const Professionals = () => {
                           {isTimeSchaduled(slot) ? (
                             <input
                               type="text"
-                              value={slot.toTimeString().slice(0, 5)}
+                              value={slot
+                                .toLocaleTimeString("pt-BR", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })
+                                .replace(":", "H")
+                                .concat("min")}
                               disabled
-                              className="bg-transparent text-center line-through text-gray-400 border-none pointer-events-none"
+                              className="bg-transparent text-center line-through text-red-400 border-none pointer-events-none"
                               style={{ cursor: "not-allowed" }}
                             />
                           ) : (
-                            slot.toTimeString().slice(0, 5)
+                            slot
+                              .toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
+                              .replace(":", "H")
+                              .concat("min")
                           )}
                         </li>
-
-
                       ))}
                     </ul>
                   ) : (
-                    <p className="text-gray-500">Nenhum horário disponível</p>
+                    <p className="text-yellow-700 font-semibold text-center p-2 rounded-md mt-6">
+                      Por favor, selecione uma data para visualizar os horários disponíveis.
+                    </p>
                   )}
                 </div>
                 <div className="flex justify-between items-center">
@@ -445,15 +467,16 @@ const Professionals = () => {
                   <button
                     onClick={handleConfirm}
                     disabled={isConfirmButtonDisabled}
-                    className={`px-4 py-2 text-sm rounded-md text-white ${isConfirmButtonDisabled
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-black hover:bg-customColorGray"
+                    className={`px-4 py-2 text-sm rounded-md text-white ${isConfirmButtonDisabled ? "bg-gray-400 cursor-not-allowed" : "bg-black hover:bg-customColorGray"
                       }`}
                   >
                     Confirmar
                   </button>
                 </div>
               </div>
+
+
+
             </div>
           </div>
         </div>
