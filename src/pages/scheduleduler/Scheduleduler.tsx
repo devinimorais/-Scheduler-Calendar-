@@ -65,10 +65,8 @@ const Agendador: React.FC = () => {
                     />
                 </div>
 
-
-
                 {/* Coluna Direita */}
-                <div className="lg:w-2/3 w-full pl-6">
+                <div className="lg:w-2/3 w-full lg:pl-6">
                     {/* Cabeçalho do Calendário */}
                     <div className="flex flex-col mb-4">
                         <h2 className="text-lg font-bold text-gray-800">Escolha uma data</h2>
@@ -94,12 +92,13 @@ const Agendador: React.FC = () => {
                     </div>
 
                     {/* Cabeçalho dos dias da semana */}
-                    <div className="grid grid-cols-7 border-b border-gray-300">
+                    <div className="grid grid-cols-7 border-b border-gray-300 mx-auto w-full">
                         {daysOfWeek.map((day, index) => (
                             <div
                                 key={day}
-                                className={`h-12 flex justify-center items-center text-sm font-bold text-gray-700 uppercase ${index !== daysOfWeek.length - 1 ? "border-r border-gray-300" : ""
-                                    } px-2`}
+                                className={`h-12 flex justify-center items-center text-sm font-bold text-gray-700 uppercase ${
+                                    index !== daysOfWeek.length - 1 ? "border-r border-gray-300" : ""
+                                } px-2`}
                             >
                                 {day}
                             </div>
@@ -107,18 +106,20 @@ const Agendador: React.FC = () => {
                     </div>
 
                     {/* Calendário */}
-                    <div className="grid grid-cols-7 gap-0 mt-2">
+                    <div className="grid grid-cols-7 gap-0 mt-2 mx-auto w-full">
                         {calendarDays.map((day, index) => (
                             <div
                                 key={`${day.toString()}-${index}`}
-                                className={`relative h-12 flex justify-center items-center border-b border-gray-300 ${index % 7 !== 6 ? "border-r border-gray-300" : ""
-                                    }`}
+                                className={`relative h-12 flex justify-center items-center border-b border-gray-300 ${
+                                    index % 7 !== 6 ? "border-r border-gray-300" : ""
+                                }`}
                             >
                                 <button
-                                    className={`h-10 w-10 flex justify-center items-center rounded-full text-sm ${day.isSame(currentDate, "month")
-                                        ? "bg-black text-white hover:bg-teal-600"
-                                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                                        }`}
+                                    className={`h-10 w-10 flex justify-center items-center rounded-full text-sm ${
+                                        day.isSame(currentDate, "month")
+                                            ? "bg-black text-white hover:bg-teal-600"
+                                            : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                    }`}
                                     onClick={() =>
                                         day.isSame(currentDate, "month") && handleDateSelect(day)
                                     }
