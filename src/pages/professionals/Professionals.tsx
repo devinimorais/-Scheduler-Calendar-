@@ -116,43 +116,41 @@ const Professionals = () => {
       setAvailableTimeSlots([]);
       return;
     }
+  
     const dayOfWeekIndex = new Date(date).getDay();
     const weekdayEnMap = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
     const selectedWeekdayEn = weekdayEnMap[dayOfWeekIndex];
     const schedule = professional.schedules.find(
       (s) => s.weekdayEn.toLowerCase() === selectedWeekdayEn
     );
-
+  
     if (!schedule) {
       setAvailableTimeSlots([]);
       return;
     }
+  
     const { startTime, endTime } = schedule;
     const duration = parseInt(professional.appointmentSpacing, 10) || 30;
-    const correctedEndTime = endTime === "00:00" ? "23:59" : endTime;
-
-    const start = new Date(
-      `${date}T${startTime}:00`
-    );
-
-    const end = new Date(
-      `${date}T${correctedEndTime}:00`
-    );
-
+  
+    const start = new Date(`${date}T${startTime}:00`);
+    const end = new Date(`${date}T${endTime === "00:00" ? "23:59" : endTime}:00`);
+  
     if (start >= end) {
       setAvailableTimeSlots([]);
       return;
     }
-
+  
     const slots = [];
     let current = new Date(start);
+  
     while (current < end) {
       slots.push(new Date(current));
       current.setMinutes(current.getMinutes() + duration);
     }
-
+  
     setAvailableTimeSlots(slots);
   };
+  
 
 
 
@@ -193,7 +191,7 @@ const Professionals = () => {
       }
     }
   };
-  console.log(selectedProfessional);
+  console.log(selectedProfessional,"AQUIIIIIIIIIIIIIIIII");
   const closeModal = () => {
     setSelectedProfessional(null);
     setSelectedDate("");
@@ -227,14 +225,21 @@ const Professionals = () => {
   );
 
 
-  function isTimeSchaduled(timeString: Date) {
-    const time = new Date(timeString)
-    console.log(time, "aaaaaaaaaaaaaaaaaaaaaaa", appointments)
-    const result = appointments.map(date => date.scheduledDate
-    ).filter((date) => new Date(date).getTime() === time.getTime()).length > 0;
-    console.log(result)
-    return result
-
+  function isTimeSchaduled(timeSlot: Date) {
+    if (!selectedProfessional) return false; // Garantir que existe um profissional selecionado.
+  
+    // Filtrar agendamentos pelo userId do profissional selecionado.
+    const professionalAppointments = appointments.filter(
+      (appointment) => appointment.userId === selectedProfessional.id
+    );
+  
+    // Verificar se o horário já está agendado para o profissional.
+    return professionalAppointments.some((appointment) => {
+      const scheduledDate = new Date(appointment.scheduledDate);
+      return scheduledDate.getTime() === timeSlot.getTime();
+    });
+  }
+  
 
   return (
 
