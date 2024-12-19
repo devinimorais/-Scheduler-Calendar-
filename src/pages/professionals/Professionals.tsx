@@ -38,23 +38,13 @@ const Professionals = () => {
   const [appointments, setAppointments] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-
   const [searchTerm, setSearchTerm] = useState<string>("");
-
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const searchRef = useRef<HTMLDivElement>(null);
-
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-
   const isConfirmButtonDisabled = !selectedDate || !selectedTimeSlot || !selectedProfessional;
-
   const [searchParams] = useSearchParams();
   const ticketId = searchParams.get('ticketId');
-
-
-
-
 
   useEffect(() => {
     if (serviceName) {
@@ -167,28 +157,31 @@ const Professionals = () => {
 
 
   const createAppointment = async () => {
-    if (!selectedDate || !selectedTimeSlot || !selectedProfessional) {
+    if (!selectedDate || !selectedTimeSlot || !selectedProfessional || !ticketId) {
+
       toast.error("Por favor, selecione uma data, horário e profissional.");
 
       return;
     }
 
+    function createDate(A: string, B: string) {
+      const [year, month, day] = A.split('-').map(Number);
+      const [hours, minutes] = B.split(':').map(Number);
+      return new Date(year, month - 1, day, hours, minutes);
+  }
     try {
       await axios.post("https://api.tzsexpertacademy.com/bypass/", {
         url: "https://api.tzsexpertacademy.com/appointments",
         method: "POST",
         body: {
-          scheduledDate: new Date(`${selectedDate}T${selectedTimeSlot}:00Z`).toISOString(),
+
+          scheduledDate: createDate(selectedDate,selectedTimeSlot),
           description: `Agendamento com ${selectedProfessional.name}`,
           status: "pending",
           userId: selectedProfessional.id,
-          ticketId: ticketId,
+          ticketId: +ticketId,
         },
-
       });
-
-
-
 
       toast.success("Agendamento criado com sucesso!");
       closeModal();
@@ -233,13 +226,14 @@ const Professionals = () => {
     professional.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  function isTimeSchaduled(time: Date) {
-    console.log(time, appointments)
-    return appointments.map(date => date.scheduledDate
-    ).filter((date) => new Date(date).getDate() === time.getDate() && new Date(date).getMonth() + 1 === time.getMonth() + 1 && new Date(date).getMinutes() === time.getMinutes() && new Date(date).getUTCFullYear() === time.getUTCFullYear()).length > 0;
-  }
 
-
+  function isTimeSchaduled(timeString: Date) {
+    const time = new Date(timeString)
+    console.log(time, "aaaaaaaaaaaaaaaaaaaaaaa", appointments)
+    const result = appointments.map(date => date.scheduledDate
+    ).filter((date) => new Date(date).getTime() === time.getTime()).length > 0;
+    console.log(result)
+    return result
 
 
   return (
@@ -474,9 +468,6 @@ const Professionals = () => {
                   </button>
                 </div>
               </div>
-
-
-
             </div>
           </div>
         </div>
