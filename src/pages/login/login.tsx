@@ -1,79 +1,69 @@
 import React from "react";
-import { RiLockPasswordFill, RiUser3Fill, RiMailFill } from "react-icons/ri";
+import { FiUser } from "react-icons/fi";
+import { BiSolidLockAlt } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    navigate("/Scheduledule");
+  };
+
   return (
-    <div
-      className="relative flex items-center justify-center min-h-screen bg-gradient-to-b from-black to-blue-800 px-4 sm:px-0"
-    >
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/50"></div>
-
-      {/* Login form */}
-      <div className="relative bg-white border border-black backdrop-blur-md p-6 rounded-lg shadow-[0_0_15px_rgba(0,0,0,0.8)] max-w-sm w-full z-10">
-        <div className="flex justify-center mb-4">
-          <div className="bg-[#0442c5] p-4 rounded-full">
-            <RiUser3Fill className="h-8 w-8 text-white" />
-          </div>
-        </div>
+    <div className="flex justify-center items-center min-h-screen bg-gray-200">
+      <div className="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
+        <h1 className="text-2xl font-bold text-center mb-6">Login</h1>
         <form>
-          {/* Email input */}
           <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block text-gray-700 text-sm text-[#0442c5] font-medium mb-2"
-            >
-              Email ID
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email
             </label>
-            <div className="flex items-center border border-white rounded-md focus-within:ring-2 focus-within:ring-[#313e22]">
-              <div className="p-2">
-                <RiMailFill className="h-6 w-6 text-[#0442c5]" />
-              </div>
-              <input
-                type="email"
-                id="email"
-                placeholder="Enter your email"
-                className="w-full px-4 py-2 focus:outline-none text-black bg-transparent"
-              />
-            </div>
+            <input
+              type="email"
+              id="email"
+              className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+              placeholder="Email"
+            />
           </div>
-
-          {/* Password input */}
           <div className="mb-4">
-            <label
-              htmlFor="password"
-              className="block text-gray-700 text-sm text-[#0442c5] font-medium mb-2"
-            >
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
               Password
             </label>
-            <div className="flex items-center border border-white rounded-md focus-within:ring-2 focus-within:ring-[#313e22]">
-              <div className="p-2">
-                <RiLockPasswordFill className="h-6 w-6 text-[#0442c5]" />
-              </div>
-              <input
-                type="password"
-                id="password"
-                placeholder="Enter your password"
-                className="w-full px-4 py-2 focus:outline-none text-black bg-transparent"
-              />
-            </div>
+            <input
+              type="password"
+              id="password"
+              className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+              placeholder="Password"
+            />
           </div>
-
-          {/* Remember me and forgot password */}
-          <div className="flex items-center justify-end mb-4">
-            <a href="#" className="text-sm text-[#0442c5] hover:underline">
-              Forgot Password?
-            </a>
-          </div>
-
-          {/* Submit button */}
           <button
             type="submit"
-            className="w-full bg-[#0442c5] text-white py-2 px-4 rounded-md hover:bg-[#96cafb] transition-colors"
+            className="w-full py-2 px-4 bg-black font-semibold rounded-md hover:opacity-90 text-white"
           >
             Login
           </button>
         </form>
+        <div className="text-center mt-4">
+          <a
+            href="#"
+            className="text-sm text-blue-500 hover:underline"
+          >
+            Forgot Password?
+          </a>
+        </div>
+        <div className="text-center mt-2">
+          <p className="text-sm">
+            Don’t have an account?{' '}
+            <a
+              href="#"
+              className="text-blue-500 font-semibold hover:underline"
+            >
+              Sign up
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );
