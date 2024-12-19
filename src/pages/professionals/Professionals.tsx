@@ -214,6 +214,8 @@ const Professionals = () => {
       if (err instanceof Error) {
         console.error('Erro ao buscar os agendamentos:', err.message);
         setError(err.message);
+      } else {
+        toast.error("Falha buscar agendamento");
       }
     }
   };
