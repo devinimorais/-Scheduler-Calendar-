@@ -116,41 +116,41 @@ const Professionals = () => {
       setAvailableTimeSlots([]);
       return;
     }
-  
+
     const dayOfWeekIndex = new Date(date).getDay();
     const weekdayEnMap = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
     const selectedWeekdayEn = weekdayEnMap[dayOfWeekIndex];
     const schedule = professional.schedules.find(
       (s) => s.weekdayEn.toLowerCase() === selectedWeekdayEn
     );
-  
+
     if (!schedule) {
       setAvailableTimeSlots([]);
       return;
     }
-  
+
     const { startTime, endTime } = schedule;
     const duration = parseInt(professional.appointmentSpacing, 10) || 30;
-  
+
     const start = new Date(`${date}T${startTime}:00`);
     const end = new Date(`${date}T${endTime === "00:00" ? "23:59" : endTime}:00`);
-  
+
     if (start >= end) {
       setAvailableTimeSlots([]);
       return;
     }
-  
+
     const slots = [];
     let current = new Date(start);
-  
+
     while (current < end) {
       slots.push(new Date(current));
       current.setMinutes(current.getMinutes() + duration);
     }
-  
+
     setAvailableTimeSlots(slots);
   };
-  
+
 
 
 
@@ -166,14 +166,14 @@ const Professionals = () => {
       const [year, month, day] = A.split('-').map(Number);
       const [hours, minutes] = B.split(':').map(Number);
       return new Date(year, month - 1, day, hours, minutes);
-  }
+    }
     try {
       await axios.post("https://api.tzsexpertacademy.com/bypass/", {
         url: "https://api.tzsexpertacademy.com/appointments",
         method: "POST",
         body: {
 
-          scheduledDate: createDate(selectedDate,selectedTimeSlot),
+          scheduledDate: createDate(selectedDate, selectedTimeSlot),
           description: `Agendamento com ${selectedProfessional.name}`,
           status: "pending",
           userId: selectedProfessional.id,
@@ -191,7 +191,7 @@ const Professionals = () => {
       }
     }
   };
-  console.log(selectedProfessional,"AQUIIIIIIIIIIIIIIIII");
+  console.log(selectedProfessional, "AQUIIIIIIIIIIIIIIIII");
   const closeModal = () => {
     setSelectedProfessional(null);
     setSelectedDate("");
@@ -226,20 +226,19 @@ const Professionals = () => {
 
 
   function isTimeSchaduled(timeSlot: Date) {
-    if (!selectedProfessional) return false; // Garantir que existe um profissional selecionado.
-  
-    // Filtrar agendamentos pelo userId do profissional selecionado.
+    if (!selectedProfessional) return false; 
+
+
     const professionalAppointments = appointments.filter(
       (appointment) => appointment.userId === selectedProfessional.id
     );
-  
-    // Verificar se o horário já está agendado para o profissional.
+
     return professionalAppointments.some((appointment) => {
       const scheduledDate = new Date(appointment.scheduledDate);
       return scheduledDate.getTime() === timeSlot.getTime();
     });
   }
-  
+
 
   return (
 
@@ -341,21 +340,15 @@ const Professionals = () => {
             <div className="flex flex-col lg:flex-row gap-6">
               <div className="w-full lg:w-2/3 ">
                 <div className="bg-black text-white rounded-t-lg">
-                  <div className="flex justify-between items-center px-4 py-3">
-                    <button
-                      className="px-3 py-2 bg-black text-white rounded-full hover:bg-customColorGray"
-                      onClick={handlePreviousMonth}
-                    >
-                      {"<"}
-                    </button>
-                    <h3 className="text-lg font-medium uppercase">
+                  <div className="relative flex items-center px-4 py-3">  
+                    <h3 className="text-lg font-medium uppercase mx-auto">
                       {new Date(currentYear, currentMonth).toLocaleDateString("pt-BR", {
                         month: "long",
                         year: "numeric",
                       }).replace(/(^\w)/, (match) => match.toUpperCase())}
                     </h3>
                     <button
-                      className="px-3 py-2 bg-black text-white rounded-full hover:bg-customColorGray"
+                      className="absolute right-4 px-3 py-2 bg-black text-white rounded-full hover:bg-customColorGray"
                       onClick={handleNextMonth}
                     >
                       {">"}
@@ -373,20 +366,29 @@ const Professionals = () => {
                 <div className="grid grid-cols-7 gap-1 mt-2">
                   {(() => {
                     const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+                    const today = new Date(); // Data atual
+                    const isCurrentMonth = today.getFullYear() === currentYear && today.getMonth() === currentMonth; 
+
                     const days = [];
                     for (let i = 0; i < firstDayOfMonth; i++) {
                       days.push(<div key={`empty-${i}`} className="h-10"></div>);
                     }
                     for (let day = 1; day <= daysInMonth; day++) {
+                      const isPastDay =
+                        isCurrentMonth && day < today.getDate(); 
+
                       days.push(
                         <button
                           key={day}
-                          onClick={() => handleDateSelection(day)}
+                          onClick={() => !isPastDay && handleDateSelection(day)} 
                           className={`h-10 rounded-lg text-black ${selectedDate ===
                             `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
                             ? "bg-customColorGray text-white"
-                            : "bg-gray-100 hover:bg-gray-300"
+                            : isPastDay
+                              ? "bg-gray-200 text-gray-400 cursor-not-allowed" 
+                              : "bg-gray-100 hover:bg-gray-300"
                             }`}
+                          disabled={isPastDay} 
                         >
                           {day}
                         </button>
@@ -395,6 +397,7 @@ const Professionals = () => {
                     return days;
                   })()}
                 </div>
+
               </div>
               <div className="w-full lg:w-1/3 bg-gray-50 p-4 rounded-lg shadow-inner flex flex-col justify-between">
                 <div className="mb-4">
