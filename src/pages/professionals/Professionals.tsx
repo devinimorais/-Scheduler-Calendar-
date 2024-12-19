@@ -38,23 +38,13 @@ const Professionals = () => {
   const [appointments, setAppointments] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-
   const [searchTerm, setSearchTerm] = useState<string>("");
-
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const searchRef = useRef<HTMLDivElement>(null);
-
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-
   const isConfirmButtonDisabled = !selectedDate || !selectedTimeSlot || !selectedProfessional;
-
   const [searchParams] = useSearchParams();
   const ticketId = searchParams.get('ticketId');
-
-
-
-
 
   useEffect(() => {
     if (serviceName) {
@@ -168,33 +158,30 @@ const Professionals = () => {
 
   const createAppointment = async () => {
     if (!selectedDate || !selectedTimeSlot || !selectedProfessional || !ticketId) {
+
       toast.error("Por favor, selecione uma data, horário e profissional.");
 
       return;
     }
+
     function createDate(A: string, B: string) {
       const [year, month, day] = A.split('-').map(Number);
       const [hours, minutes] = B.split(':').map(Number);
       return new Date(year, month - 1, day, hours, minutes);
   }
     try {
-
-
       await axios.post("https://api.tzsexpertacademy.com/bypass/", {
         url: "https://api.tzsexpertacademy.com/appointments",
         method: "POST",
         body: {
+
           scheduledDate: createDate(selectedDate,selectedTimeSlot),
           description: `Agendamento com ${selectedProfessional.name}`,
           status: "pending",
           userId: selectedProfessional.id,
           ticketId: +ticketId,
         },
-
       });
-
-      console.log(selectedDate ,"AAAAAAAA", selectedTimeSlot, "AQUIIIIIIIIIII")
-
 
       toast.success("Agendamento criado com sucesso!");
       closeModal();
@@ -239,18 +226,14 @@ const Professionals = () => {
     professional.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+
   function isTimeSchaduled(timeString: Date) {
     const time = new Date(timeString)
     console.log(time, "aaaaaaaaaaaaaaaaaaaaaaa", appointments)
     const result = appointments.map(date => date.scheduledDate
     ).filter((date) => new Date(date).getTime() === time.getTime()).length > 0;
     console.log(result)
-
     return result
-
-  }
-
-
 
 
   return (
