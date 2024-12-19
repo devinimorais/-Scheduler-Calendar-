@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../../components/Navbar";
 import { ToastContainer, toast } from "react-toastify";
@@ -7,6 +7,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { TbCalendarClock } from "react-icons/tb";
 import { Appointment } from './../../api/appointments';
 import { newDate } from "react-datepicker/dist/date_utils";
+
+import { GoArrowSwitch } from "react-icons/go";
 
 
 type Professional = {
@@ -70,6 +72,7 @@ const Professionals = () => {
     }
 
   }, [serviceName]);
+
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -228,7 +231,7 @@ const Professionals = () => {
 
 
   function isTimeSchaduled(timeSlot: Date) {
-    if (!selectedProfessional) return false; 
+    if (!selectedProfessional) return false;
 
 
     const professionalAppointments = appointments.filter(
@@ -242,41 +245,67 @@ const Professionals = () => {
   }
 
 
+
   return (
 
-    <div className="relative  min-h-screen ">
-      <div className="p-6 lg:p-8 mt-16 relative">
-        <div className="flex justify-end mb-6" ref={searchRef}>
-          <div
-            className={`relative ${searchOpen ? "w-[270px]" : "w-[60px]"
-              } h-[40px] bg-black shadow-lg rounded-lg flex items-center transition-all duration-300 border border-solid border-black`}
-            onClick={() => setSearchOpen(true)}
+    <div className="relative  min-h-screen w-full ">
+
+      <div className="p-6 lg:p-8 mt-16 relative w-full ">
+        <div className="p-6 lg:p-8 relative sm:pt-10 pt-10 ">
+
+          <button
+            type="button"
+            className="absolute top-0 left-0 flex items-center gap-1 sm:gap-2 text-white bg-black border border-black px-2 py-1 sm:px-4 sm:py-2 rounded-md hover:bg-gray-600 transition duration-300 ml-6"
           >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-3 h-3 sm:w-5 sm:h-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            <span className="text-xs sm:text-base font-medium">Voltar</span>
+          </button>
 
-            <div className="flex items-center justify-center fill-white pl-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="22"
-                height="22"
-                className="group-hover:fill-blue-200 transition duration-300"
-              >
-                <path d="M18.9,16.776A10.539,10.539,0,1,0,16.776,18.9l5.1,5.1L24,21.88ZM10.5,18A7.5,7.5,0,1,1,18,10.5,7.507,7.507,0,0,1,10.5,18Z"></path>
-              </svg>
+
+
+          <div className="text-center">
+            <h1 className="text-2xl font-bold">Serviço Selecionado: {serviceName}</h1>
+            <div className="w-full h-[2px] bg-black mt-4"></div>
+            <div className="flex justify-center items-center gap-12 mt-4">
+              {/* Botão Pesquisar Serviços */}
+              <div className="flex" ref={searchRef}>
+                <div className="relative w-[270px] h-[40px] bg-black shadow-lg rounded-lg flex items-center transition-all duration-300 border border-solid border-black">
+                  <div className="flex items-center justify-center fill-white pl-4">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="22"
+                      height="22"
+                      className="group-hover:fill-blue-200 transition duration-300"
+                    >
+                      <path d="M18.9,16.776A10.539,10.539,0,1,0,16.776,18.9l5.1,5.1L24,21.88ZM10.5,18A7.5,7.5,0,1,1,18,10.5,7.507,7.507,0,0,1,10.5,18Z"></path>
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Pesquisar profissionais"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="outline-none text-[16px] bg-transparent w-full text-white font-normal px-4 transition-all duration-300 placeholder-white"
+                    autoFocus
+                  />
+                </div>
+              </div>
             </div>
-
-            {searchOpen && (
-              <input
-                type="text"
-                placeholder="Pesquisar profissionais"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="outline-none text-[16px] bg-transparent w-full text-white font-normal px-4 transition-all duration-300 placeholder-white"
-                autoFocus
-              />
-            )}
           </div>
         </div>
+
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
           {filteredProfessionals.length > 0 ? (
@@ -342,7 +371,7 @@ const Professionals = () => {
             <div className="flex flex-col lg:flex-row gap-6">
               <div className="w-full lg:w-2/3 ">
                 <div className="bg-black text-white rounded-t-lg">
-                  <div className="relative flex items-center px-4 py-3">  
+                  <div className="relative flex items-center px-4 py-3">
                     <h3 className="text-lg font-medium uppercase mx-auto">
                       {new Date(currentYear, currentMonth).toLocaleDateString("pt-BR", {
                         month: "long",
@@ -369,7 +398,7 @@ const Professionals = () => {
                   {(() => {
                     const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
                     const today = new Date(); // Data atual
-                    const isCurrentMonth = today.getFullYear() === currentYear && today.getMonth() === currentMonth; 
+                    const isCurrentMonth = today.getFullYear() === currentYear && today.getMonth() === currentMonth;
 
                     const days = [];
                     for (let i = 0; i < firstDayOfMonth; i++) {
@@ -377,20 +406,20 @@ const Professionals = () => {
                     }
                     for (let day = 1; day <= daysInMonth; day++) {
                       const isPastDay =
-                        isCurrentMonth && day < today.getDate(); 
+                        isCurrentMonth && day < today.getDate();
 
                       days.push(
                         <button
                           key={day}
-                          onClick={() => !isPastDay && handleDateSelection(day)} 
+                          onClick={() => !isPastDay && handleDateSelection(day)}
                           className={`h-10 rounded-lg text-black ${selectedDate ===
                             `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
                             ? "bg-customColorGray text-white"
                             : isPastDay
-                              ? "bg-gray-200 text-gray-400 cursor-not-allowed" 
+                              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                               : "bg-gray-100 hover:bg-gray-300"
                             }`}
-                          disabled={isPastDay} 
+                          disabled={isPastDay}
                         >
                           {day}
                         </button>
