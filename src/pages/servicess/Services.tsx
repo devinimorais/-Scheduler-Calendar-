@@ -104,8 +104,8 @@ const Services = () => {
         <div
           className="flex items-center justify-center min-h-screen bg-center bg-no-repeat bg-contain"
           style={{
-            backgroundImage: `url(${errorImage})`, // Substitua pelo caminho da sua imagem
-            backgroundSize: "40%", // Mantém a proporção da imagem
+            backgroundImage: `url(${errorImage})`,
+            backgroundSize: "40%",
           }}
         />
       </div>
@@ -119,13 +119,12 @@ const Services = () => {
       <ToastContainer />
       <div className="p-6 lg:p-8 mt-16 relative">
         {/* Campo de busca */}
+
+
         <div className="flex justify-end mb-6" ref={searchRef}>
           <div
-            className={`relative ${searchOpen ? "w-[270px]" : "w-[60px]"
-              } h-[40px] bg-black shadow-lg rounded-lg flex items-center transition-all duration-300 border border-solid border-black`}
-            onClick={() => setSearchOpen(true)} // Abre o campo ao clicar
+            className="relative w-[270px] h-[40px] bg-black shadow-lg rounded-lg flex items-center transition-all duration-300 border border-solid border-black"
           >
-
             {/* Ícone de busca */}
             <div className="flex items-center justify-center fill-white pl-4">
               <svg
@@ -139,16 +138,14 @@ const Services = () => {
               </svg>
             </div>
             {/* Input de busca */}
-            {searchOpen && (
-              <input
-                type="text"
-                placeholder="Pesquisar serviços"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="outline-none text-[16px] bg-transparent w-full text-white font-normal px-4 transition-all duration-300 placeholder-white"
-                autoFocus
-              />
-            )}
+            <input
+              type="text"
+              placeholder="Pesquisar serviços"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="outline-none text-[16px] bg-transparent w-full text-white font-normal px-4 transition-all duration-300 placeholder-white"
+              autoFocus
+            />
           </div>
         </div>
 
@@ -178,7 +175,7 @@ const Services = () => {
                           .slice(0, 2)
                           .toUpperCase()}
                       </div>
-                      {/* Nome e descrição do serviço */}
+
                       <div>
                         <h2 className="text-lg font-semibold tracking-tight text-black lg:text-2xl">
                           {service.name}
@@ -189,7 +186,6 @@ const Services = () => {
                         </p>
                       </div>
                     </div>
-                    {/* Preço e duração */}
                     <div className="mt-1 text-right">
                       <p>
                         <span className="text-3xl font-light tracking-tight text-green-700">

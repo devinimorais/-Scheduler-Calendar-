@@ -24,7 +24,23 @@ type Professional = {
   }[];
 };
 
+type Service = {
+  id: number;
+  name: string;
+  description: string;
+  price: string;
+  duration: string;
+  users: Professional[];
+};
 
+const service: Service = {
+  id: 1,
+  name: "Serviço Exemplo",
+  description: "Descrição do serviço",
+  price: "100",
+  duration: "60",
+  users: [],
+};
 
 const Professionals = () => {
   const location = useLocation();
@@ -96,6 +112,8 @@ const Professionals = () => {
       setCurrentMonth((prevMonth) => prevMonth - 1);
     }
   };
+
+
 
   const handleNextMonth = () => {
     if (currentMonth === 11) {
@@ -223,7 +241,11 @@ const Professionals = () => {
     }
   };
 
-
+  const handleSelectService = (service: Service) => {
+    navigate(`/services/16?ticketId=${ticketId}`, {
+      state: { professionals: service.users, serviceName: service.name }
+    });
+  };
 
   const filteredProfessionals = professionals.filter((professional) =>
     professional.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -256,6 +278,7 @@ const Professionals = () => {
           <button
             type="button"
             className="absolute top-0 left-0 flex items-center gap-1 sm:gap-2 text-white bg-black border border-black px-2 py-1 sm:px-4 sm:py-2 rounded-md hover:bg-gray-600 transition duration-300 ml-6"
+            onClick={() => handleSelectService(service)}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -278,7 +301,7 @@ const Professionals = () => {
             <h1 className="text-2xl font-bold">Serviço Selecionado: {serviceName}</h1>
             <div className="w-full h-[2px] bg-black mt-4"></div>
             <div className="flex justify-center items-center gap-12 mt-4">
-              {/* Botão Pesquisar Serviços */}
+
               <div className="flex" ref={searchRef}>
                 <div className="relative w-[270px] h-[40px] bg-black shadow-lg rounded-lg flex items-center transition-all duration-300 border border-solid border-black">
                   <div className="flex items-center justify-center fill-white pl-4">
