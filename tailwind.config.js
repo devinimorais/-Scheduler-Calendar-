@@ -5,6 +5,9 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        'sans': ['Poppins', "sans-serif"],
+      },
       colors: {
         customGray: '#f2f2f2', 
         customColorGray: '#2c2c2c',

@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import axios from "axios";
-import Navbar from "../../components/Navbar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { TbCalendarClock } from "react-icons/tb";
-import { Appointment } from './../../api/appointments';
-import { newDate } from "react-datepicker/dist/date_utils";
+import { IoLogoSkype } from "react-icons/io";
 
-import { GoArrowSwitch } from "react-icons/go";
 
 
 type Professional = {
@@ -44,7 +41,7 @@ const service: Service = {
 
 const Professionals = () => {
   const location = useLocation();
-  const { professionals, serviceName }: { professionals: Professional[]; serviceName: string } =
+  const { professionals, serviceName, serviceId }: { professionals: Professional[], serviceName: string, serviceId: any } =
     location.state || { professionals: [], serviceName: "" };
 
   const [selectedProfessional, setSelectedProfessional] = useState<Professional | null>(null);
@@ -63,7 +60,7 @@ const Professionals = () => {
   const isConfirmButtonDisabled = !selectedDate || !selectedTimeSlot || !selectedProfessional;
   const [searchParams] = useSearchParams();
   const ticketId = searchParams.get('ticketId');
-
+  const [reload, setReload] = useState(0);
   useEffect(() => {
     if (serviceName) {
       toast.info(
@@ -87,7 +84,7 @@ const Professionals = () => {
       fetchAppointments();
     }
 
-  }, [serviceName]);
+  }, [serviceName, reload]);
 
 
   useEffect(() => {
@@ -133,7 +130,7 @@ const Professionals = () => {
   };
 
   const generateTimeSlots = (professional: Professional, date: string) => {
-    if (!professional.schedules || !professional.schedules.length) {
+    if (!professional?.schedules || !professional?.schedules.length) {
       setAvailableTimeSlots([]);
       return;
     }
@@ -141,7 +138,7 @@ const Professionals = () => {
     const dayOfWeekIndex = new Date(date).getDay();
     const weekdayEnMap = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
     const selectedWeekdayEn = weekdayEnMap[dayOfWeekIndex];
-    const schedule = professional.schedules.find(
+    const schedule = professional?.schedules.find(
       (s) => s.weekdayEn.toLowerCase() === selectedWeekdayEn
     );
 
@@ -151,7 +148,7 @@ const Professionals = () => {
     }
 
     const { startTime, endTime } = schedule;
-    const duration = parseInt(professional.appointmentSpacing, 10) || 30;
+    const duration = parseInt(professional?.appointmentSpacing, 10) || 30;
 
     const start = new Date(`${date}T${startTime}:00`);
     const end = new Date(`${date}T${endTime === "00:00" ? "23:59" : endTime}:00`);
@@ -203,6 +200,7 @@ const Professionals = () => {
       });
 
       toast.success("Agendamento criado com sucesso!");
+      setReload(reload + 1)
       closeModal();
     } catch (err: any) {
       if (err.response) {
@@ -212,11 +210,11 @@ const Professionals = () => {
       }
     }
   };
-  console.log(selectedProfessional, "AQUIIIIIIIIIIIIIIIII");
   const closeModal = () => {
     setSelectedProfessional(null);
     setSelectedDate("");
     setSelectedTimeSlot("");
+    setAvailableTimeSlots([])
   };
 
   const handleConfirm = () => {
@@ -241,14 +239,12 @@ const Professionals = () => {
     }
   };
 
-  const handleSelectService = (service: Service) => {
-    navigate(`/services/16?ticketId=${ticketId}`, {
-      state: { professionals: service.users, serviceName: service.name }
-    });
+  const handleSelectService = () => {
+    navigate(`/services/${serviceId}?ticketId=${ticketId}`,);
   };
 
   const filteredProfessionals = professionals.filter((professional) =>
-    professional.name.toLowerCase().includes(searchTerm.toLowerCase())
+    professional?.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
 
@@ -272,96 +268,94 @@ const Professionals = () => {
 
     <div className="relative  min-h-screen w-full ">
 
-      <div className="p-6 lg:p-8 mt-16 relative w-full ">
-        <div className="p-6 lg:p-8 relative sm:pt-10 pt-10 ">
+      <div className="p-6 lg:p-8 relative w-full ">
+        <div className=" bg-white  shadow-custom-card border border-solid border-black rounded-lg relative p-4">
+          <div className="flex items-center  flex-col  w-full">
+            <div className="  flex w-full justify-between">
+              <div className="  flex w-full flex-start flex-col">
+                <h1 className="text-4xl font-bold text-black">{serviceName}</h1>
+                <span className="text-lg font-normal text-gray-900">Serviço Selecionado</span>
+              </div>
+              <div className="w-[80px] h-[80px] overflow-hidden p-1 flex justify-center items-center">
+                <img width={300} />
+              </div>
+            </div>
+            <div className="h-2 border border-solid w-full border-l-0 border-r-0 border-b-0 border-gray-200" />
 
-          <button
-            type="button"
-            className="absolute top-0 left-0 flex items-center gap-1 sm:gap-2 text-white bg-black border border-black px-2 py-1 sm:px-4 sm:py-2 rounded-md hover:bg-gray-600 transition duration-300 ml-6"
-            onClick={() => handleSelectService(service)}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-3 h-3 sm:w-5 sm:h-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
-            <span className="text-xs sm:text-base font-medium">Voltar</span>
-          </button>
+            <div className="w-full flex justify-between items-center">
+              <ul className="flex gap-4">
+                <li className="border-2 border-none hover:border-solid border-t-0 border-r-0 border-l-0 hover:font-bold" >
+                  <button onClick={handleSelectService}>
 
-
-
-          <div className="text-center">
-            <h1 className="text-2xl font-bold">Serviço Selecionado: {serviceName}</h1>
-            <div className="w-full h-[2px] bg-black mt-4"></div>
-            <div className="flex justify-center items-center gap-12 mt-4">
-
-              <div className="flex" ref={searchRef}>
-                <div className="relative w-[270px] h-[40px] bg-black shadow-lg rounded-lg flex items-center transition-all duration-300 border border-solid border-black">
-                  <div className="flex items-center justify-center fill-white pl-4">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      width="22"
-                      height="22"
-                      className="group-hover:fill-blue-200 transition duration-300"
-                    >
-                      <path d="M18.9,16.776A10.539,10.539,0,1,0,16.776,18.9l5.1,5.1L24,21.88ZM10.5,18A7.5,7.5,0,1,1,18,10.5,7.507,7.507,0,0,1,10.5,18Z"></path>
-                    </svg>
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="Pesquisar profissionais"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="outline-none text-[16px] bg-transparent w-full text-white font-normal px-4 transition-all duration-300 placeholder-white"
-                    autoFocus
-                  />
-                </div>
+                    Serviços
+                  </button>
+                </li>
+                <li className="border-2 border-solid border-t-0 border-r-0 border-l-0 font-bold">
+                  Profissionais
+                </li>
+              </ul>
+              <div className="relative w-[300px]">
+                <input
+                  type="text"
+                  placeholder="Pesquisar serviços"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-full shadow-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
               </div>
             </div>
           </div>
+
+
+
         </div>
+
 
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
           {filteredProfessionals.length > 0 ? (
             filteredProfessionals.map((professional) => (
               <div
-                key={professional.id}
-                className="flex flex-col bg-white mx-auto w-full sm:w-[85%] shadow-custom-card border border-solid border-black rounded-lg"
+                key={professional?.id}
+                className="flex flex-col bg-white h-[350px] w-full sm:w-[90%] shadow-custom-card border border-solid border-gray-200 rounded-lg"
               >
-                <div className="px-4 py-6 sm:p-8 sm:pb-4">
-
-                  <div className="grid items-center justify-center w-full grid-cols-1 text-left">
-                    <div className="flex items-center space-x-4">
-                      <div className="flex items-center justify-center w-14 h-14 text-white bg-black rounded-full">
-                        {professional.name
-                          .split(" ")
-                          .map((word) => word.charAt(0))
-                          .join("")
-                          .slice(0, 2)
-                          .toUpperCase()}
-                      </div>
-                      <div>
-                        <h2 className="text-lg font-semibold tracking-tight text-black lg:text-2xl">
-                          {professional.name}
+                <div className="px-4 py-6 sm:p-8 sm:pb-4 flex-grow">
+                  <div className="grid items-center justify-center place-items-center w-full text-left">
+                    <div className="flex items-center justify-center w-24 h-24 text-white bg-black rounded-full mb-4 text-2xl">
+                      {professional?.name
+                        .split(" ")
+                        .map((word) => word.charAt(0))
+                        .join("")
+                        .slice(0, 2)
+                        .toUpperCase()}
+                    </div>
+                    <div className="flex items-center justify-center mb-4 w-full">
+                      <div className="flex flex-col justify-center">
+                        <h2 className="text-lg font-semibold tracking-tight text-black lg:text-2xl text-center">
+                          {professional?.name}
                         </h2>
-                        <p className="text-lg text-gray-500">
-                          Profissão: {professional.profession}
+                        <p className="text-lg text-gray-500 text-center">
+                          {professional?.profession}
                         </p>
                       </div>
                     </div>
-                    <div className="mt-1 text-right">
+                    <div className="text-left">
                       <p>
                         <span className="text-3xl font-light tracking-tight text-green-700">
-                          {professional.appointmentSpacing} min
+                          {professional?.appointmentSpacing} min
                         </span>
                       </p>
                     </div>
@@ -474,10 +468,8 @@ const Professionals = () => {
                           onClick={() => !isTimeSchaduled(slot) && setSelectedTimeSlot(slot.toTimeString().slice(0, 5))}
                           className={`p-2 text-sm text-center rounded-lg ${isTimeSchaduled(slot)
                             ? "bg-gray-100 text-gray-400 cursor-not-allowed hover:cursor-not-allowed"
-                            : selectedTimeSlot === slot
-                              .toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
-                              .replace(":", "H")
-                              .concat("min")
+                            : selectedTimeSlot === slot.toTimeString().slice(0, 5)
+
                               ? "bg-customColorGray text-white"
                               : "bg-green-200 text-black hover:bg-gray-300 cursor-pointer"
                             }`}

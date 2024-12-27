@@ -132,7 +132,7 @@ const Scheduler = () => {
       <Navbar />
 
       {/* Conteúdo principal */}
-      <div className="p-8 mt-16">
+      <div className="p-8 ">
         <h1 className="text-center text-3xl font-bold text-black mb-6 underline decoration-gray-400 decoration-4">
           Escolha um dos nossos serviços
         </h1>

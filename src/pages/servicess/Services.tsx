@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import Navbar from "../../components/Navbar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
@@ -20,7 +19,7 @@ type Service = {
   users: Professional[];
 };
 
-const Services = () => {
+const Services: React.FC = () => {
   const { serviceId } = useParams<{ serviceId: string }>();
   const [services, setServices] = useState<Service[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>(""); // Controla o texto digitado
@@ -71,7 +70,7 @@ const Services = () => {
 
   const handleSelectService = (service: Service) => {
     navigate(`/professionals?ticketId=${ticketId}`, {
-      state: { professionals: service.users, serviceName: service.name }
+      state: { professionals: service.users, serviceName: service.name, serviceId }
     });
   };
 
@@ -85,31 +84,7 @@ const Services = () => {
 
 
   if (!ticketId?.trim()) {
-    return (
-      <div className="relative min-h-screen">
-
-        <div className="absolute left-0 right-0 text-center text-red-700 font-bold"
-          style={{
-            top: "2%",
-          }}>
-          <div className="p-6  max-w-lg mx-auto">
-            <span className="text-4xl mr-2">⚠️</span>
-            <p className="text-lg md:text-2xl">
-              <strong>Link informado não é válido.</strong><br />
-              Por favor, entre contato com suporte.
-            </p>
-          </div>
-        </div>
-
-        <div
-          className="flex items-center justify-center min-h-screen bg-center bg-no-repeat bg-contain"
-          style={{
-            backgroundImage: `url(${errorImage})`,
-            backgroundSize: "40%",
-          }}
-        />
-      </div>
-    );
+    navigate('/nao-encontrado')
   }
 
 
@@ -117,57 +92,76 @@ const Services = () => {
   return (
     <div className="relative  min-h-screen">
       <ToastContainer />
-      <div className="p-6 lg:p-8 mt-16 relative">
+      <div className="p-6 lg:p-8  relative">
         {/* Campo de busca */}
 
+        <div className=" bg-white  shadow-custom-card border border-solid border-black rounded-lg relative p-4">
+          <div className="flex items-center  flex-col  w-full">
+            <div className="  flex w-full flex-start flex-col">
+              <h1 className="text-4xl font-bold text-black">Escolha um serviço</h1>
+              <span className="text-lg font-normal text-gray-900">Bem-vindo!</span>
 
-        <div className="flex justify-end mb-6" ref={searchRef}>
-          <div
-            className="relative w-[270px] h-[40px] bg-black shadow-lg rounded-lg flex items-center transition-all duration-300 border border-solid border-black"
-          >
-            {/* Ícone de busca */}
-            <div className="flex items-center justify-center fill-white pl-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="22"
-                height="22"
-                className="group-hover:fill-blue-200 transition duration-300"
-              >
-                <path d="M18.9,16.776A10.539,10.539,0,1,0,16.776,18.9l5.1,5.1L24,21.88ZM10.5,18A7.5,7.5,0,1,1,18,10.5,7.507,7.507,0,0,1,10.5,18Z"></path>
-              </svg>
             </div>
-            {/* Input de busca */}
-            <input
-              type="text"
-              placeholder="Pesquisar serviços"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="outline-none text-[16px] bg-transparent w-full text-white font-normal px-4 transition-all duration-300 placeholder-white"
-              autoFocus
-            />
+            <div className="h-2 border border-solid w-full border-l-0 border-r-0 border-b-0 border-gray-200" />
+
+            <div className="w-full flex justify-between items-center">
+              <ul className="flex gap-4">
+                <li className="border-2 border-solid border-t-0 border-r-0 border-l-0 font-bold cursor-pointer">
+                  Serviços
+                </li>
+                <li className="cursor-not-allowed">
+                  <span>
+                    Profissionais
+                  </span>
+                  {/* <CgProfile /> */}
+
+                </li>
+              </ul>
+              <div className="relative w-[300px]">
+                <input
+                  type="text"
+                  placeholder="Pesquisar serviços"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-full shadow-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </div>
+            </div>
           </div>
+
         </div>
 
+
+
         {/* Lista de serviços */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
           {services
             .filter((service) =>
               service.name.toLowerCase().includes(searchTerm.toLowerCase())
             )
             .map((service) => (
-              <div
-                key={service.id}
-                className="flex flex-col bg-white mx-auto w-full sm:w-[85%] shadow-custom-card border border-solid border-black rounded-lg"
-              >
-                {/* ID do serviço no topo do card */}
+              <>
 
-
-                <div className="px-4 py-6 sm:p-8 sm:pb-4">
-                  <div className="grid items-center justify-center w-full grid-cols-1 text-left">
-                    <div className="flex items-center space-x-4">
-                      {/* Círculo com as iniciais do serviço */}
-                      <div className="flex items-center justify-center w-14 h-14 text-white bg-black rounded-full">
+                <div
+                  key={service?.id}
+                  className="flex flex-col bg-white h-[350px] w-full sm:w-[90%] shadow-custom-card border border-solid border-gray-200 rounded-lg"
+                >
+                  <div className="px-4 py-6 sm:p-8 sm:pb-4 flex-grow">
+                    <div className="grid items-center justify-center place-items-center w-full text-left">
+                      <div className="flex items-center justify-center w-24 h-24 text-white bg-black rounded-full mb-4 text-2xl">
                         {service.name
                           .split(" ")
                           .map((word) => word.charAt(0))
@@ -175,43 +169,45 @@ const Services = () => {
                           .slice(0, 2)
                           .toUpperCase()}
                       </div>
-
-                      <div>
-                        <h2 className="text-lg font-semibold tracking-tight text-black lg:text-2xl">
-                          {service.name}
-                        </h2>
-                        <p className="text-lg text-gray-500">
-                          {service.description.charAt(0).toUpperCase() +
-                            service.description.slice(1)}
+                      <div className="flex items-center justify-center mb-4 w-full">
+                        <div className="flex flex-col justify-center text-center">
+                          <h2 className="text-lg font-semibold tracking-tight text-black lg:text-2xl text-center">
+                            {service?.name}
+                          </h2>
+                          <p className="text-lg text-gray-500">
+                            {service?.description.charAt(0).toUpperCase() +
+                              service?.description.slice(1)}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-left">
+                        <p>
+                          <span className="text-3xl font-light tracking-tight text-green-700">
+                            R$ {parseInt(service.price)}
+                          </span>
+                          <span className="text-sm font-medium text-black">
+                            {" "}
+                            / {service.duration} min
+                          </span>
                         </p>
                       </div>
                     </div>
-                    <div className="mt-1 text-right">
-                      <p>
-                        <span className="text-3xl font-light tracking-tight text-green-700">
-                          R$ {parseInt(service.price)}
-                        </span>
-                        <span className="text-sm font-medium text-black">
-                          {" "}
-                          / {service.duration} min
-                        </span>
-                      </p>
-                    </div>
+                  </div>
+
+                  <div className="flex px-4 pb-6 sm:px-6">
+                    <button
+                      onClick={() => handleSelectService(service)}
+                      className="flex items-center justify-center w-full px-4 py-2 text-center text-white duration-200 bg-black border-2 border-black rounded-lg hover:bg-transparent hover:border-black hover:text-black focus:outline-none focus-visible:outline-black text-sm focus-visible:ring-black"
+                    >
+                      Selecionar
+                      <TbArrowBigRightLine className="ml-2 text-base" />
+                    </button>
                   </div>
                 </div>
-
-                <div className="flex px-4 pb-6 sm:px-6">
-                  <button
-                    onClick={() => handleSelectService(service)}
-                    className="flex items-center justify-center w-full px-4 py-2 text-center text-white duration-200 bg-black border-2 border-black rounded-lg hover:bg-transparent hover:border-black hover:text-black focus:outline-none focus-visible:outline-black text-sm focus-visible:ring-black"
-                  >
-                    Selecionar
-                    <TbArrowBigRightLine className="ml-2 text-base" />
-                  </button>
-                </div>
-              </div>
+              </>
             ))}
         </div>
+
       </div>
     </div>
   );
