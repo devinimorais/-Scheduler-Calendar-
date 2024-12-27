@@ -282,8 +282,8 @@ const Professionals = () => {
             </div>
             <div className="h-2 border border-solid w-full border-l-0 border-r-0 border-b-0 border-gray-200" />
 
-            <div className="w-full flex justify-between items-center">
-              <ul className="flex gap-4">
+            <div className="w-full flex justify-between items-center flex-wrap flex-col sm:flex-row gap-2 sm:gap-2">
+              <ul className="flex gap-4 ">
                 <li className="border-2 border-none hover:border-solid border-t-0 border-r-0 border-l-0 hover:font-bold" >
                   <button onClick={handleSelectService}>
 
