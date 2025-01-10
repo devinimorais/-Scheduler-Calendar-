@@ -40,7 +40,7 @@ const Services: React.FC = () => {
 
       try {
         const { data } = await axios.post("https://api.tzsexpertacademy.com/bypass/", {
-          url: `https://api.tzsexpertacademy.com/service/${serviceId}`,
+          url: `https://api.tzsexpertacademy.com/service/company/${serviceId}`,
           method: "GET",
         });
         setServices(data.data);
