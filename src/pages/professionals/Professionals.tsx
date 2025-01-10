@@ -13,6 +13,7 @@ type Professional = {
   name: string;
   profession: string;
   appointmentSpacing: string;
+  appointmentSpacingUnit: string,
   schedules: {
     startTime: string;
     endTime: string;
@@ -148,25 +149,27 @@ const Professionals = () => {
     }
 
     const { startTime, endTime } = schedule;
-    const duration = parseInt(professional?.appointmentSpacing, 10) || 30;
+    const duration =professional?.appointmentSpacingUnit.toLowerCase() === "hours"
+      ? parseInt(professional?.appointmentSpacing, 10) * 60
+      : parseInt(professional?.appointmentSpacing, 10); 
 
-    const start = new Date(`${date}T${startTime}:00`);
-    const end = new Date(`${date}T${endTime === "00:00" ? "23:59" : endTime}:00`);
+      const start = new Date(`${date}T${startTime}:00`);
+      const end = new Date(`${date}T${endTime === "00:00" ? "23:59" : endTime}:00`);
 
-    if (start >= end) {
-      setAvailableTimeSlots([]);
-      return;
-    }
-
-    const slots = [];
-    let current = new Date(start);
-
-    while (current < end) {
-      slots.push(new Date(current));
-      current.setMinutes(current.getMinutes() + duration);
-    }
-
-    setAvailableTimeSlots(slots);
+      if (start >= end) {
+        setAvailableTimeSlots([]);
+        return;
+      }
+    
+      const slots = [];
+      let current = new Date(start);
+    
+      while (current < end) {
+        slots.push(new Date(current));
+        current.setMinutes(current.getMinutes() + duration);
+      }
+    
+      setAvailableTimeSlots(slots);
   };
 
 
@@ -241,6 +244,11 @@ const Professionals = () => {
 
   const handleSelectService = () => {
     navigate(`/services/${serviceId}?ticketId=${ticketId}`,);
+  };
+
+  const unitTranslations: { [key: string]: string } = {
+    hours: "hora(s)",
+    minutes: "minutos",
   };
 
   const filteredProfessionals = professionals.filter((professional) =>
@@ -355,7 +363,8 @@ const Professionals = () => {
                     <div className="text-left">
                       <p>
                         <span className="text-3xl font-light tracking-tight text-green-700">
-                          {professional?.appointmentSpacing} min
+                       {professional?.appointmentSpacing}{" "}
+  {unitTranslations[professional?.appointmentSpacingUnit] || professional?.appointmentSpacingUnit}
                         </span>
                       </p>
                     </div>
@@ -454,7 +463,7 @@ const Professionals = () => {
                       Horários Disponíveis
                     </h3>
                     {selectedProfessional && (
-                      <p className="text-sm text-white text-center bg-customColorGray p-2">
+                      <p className="text-sm text-white text-center bg-customColorGray p-2 mb-3">
                         <span className="font-normal">{serviceName}</span> |{" "}
                         <span className="font-normal">{selectedProfessional.name}</span>
                       </p>

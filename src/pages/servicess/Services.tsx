@@ -5,9 +5,11 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { TbArrowBigRightLine } from "react-icons/tb";
 import errorImage from '../../assets/img/error-404.jpg';
+import Professionals from "../professionals/Professionals";
 type Professional = {
   id: number;
   name: string;
+ 
 };
 
 type Service = {
@@ -17,6 +19,7 @@ type Service = {
   price: string;
   duration: string;
   users: Professional[];
+
 };
 
 const Services: React.FC = () => {
@@ -183,11 +186,11 @@ const Services: React.FC = () => {
                       <div className="text-left">
                         <p>
                           <span className="text-3xl font-light tracking-tight text-green-700">
-                            R$ {parseInt(service.price)}
+                            R$ {parseInt(service?.price)}
                           </span>
                           <span className="text-sm font-medium text-black">
                             {" "}
-                            / {service.duration} min
+                            / {service?.duration}  
                           </span>
                         </p>
                       </div>

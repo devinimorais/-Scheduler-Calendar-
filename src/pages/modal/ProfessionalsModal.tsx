@@ -6,6 +6,7 @@ interface Professional {
   name: string;
   title: string;
   email: string;
+  
 }
 
 interface ProfessionalsModalProps {
