@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { TbCalendarClock } from "react-icons/tb";
 import { IoLogoSkype } from "react-icons/io";
+import Services from './../servicess/Services';
 
 
 
@@ -149,27 +150,27 @@ const Professionals = () => {
     }
 
     const { startTime, endTime } = schedule;
-    const duration =professional?.appointmentSpacingUnit.toLowerCase() === "hours"
+    const duration = professional?.appointmentSpacingUnit.toLowerCase() === "hours"
       ? parseInt(professional?.appointmentSpacing, 10) * 60
-      : parseInt(professional?.appointmentSpacing, 10); 
+      : parseInt(professional?.appointmentSpacing, 10);
 
-      const start = new Date(`${date}T${startTime}:00`);
-      const end = new Date(`${date}T${endTime === "00:00" ? "23:59" : endTime}:00`);
+    const start = new Date(`${date}T${startTime}:00`);
+    const end = new Date(`${date}T${endTime === "00:00" ? "23:59" : endTime}:00`);
 
-      if (start >= end) {
-        setAvailableTimeSlots([]);
-        return;
-      }
-    
-      const slots = [];
-      let current = new Date(start);
-    
-      while (current < end) {
-        slots.push(new Date(current));
-        current.setMinutes(current.getMinutes() + duration);
-      }
-    
-      setAvailableTimeSlots(slots);
+    if (start >= end) {
+      setAvailableTimeSlots([]);
+      return;
+    }
+
+    const slots = [];
+    let current = new Date(start);
+
+    while (current < end) {
+      slots.push(new Date(current));
+      current.setMinutes(current.getMinutes() + duration);
+    }
+
+    setAvailableTimeSlots(slots);
   };
 
 
@@ -199,6 +200,7 @@ const Professionals = () => {
           status: "pending",
           userId: selectedProfessional.id,
           ticketId: +ticketId,
+          serviceId
         },
       });
 
@@ -333,12 +335,12 @@ const Professionals = () => {
 
 
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8 ">
           {filteredProfessionals.length > 0 ? (
             filteredProfessionals.map((professional) => (
               <div
                 key={professional?.id}
-                className="flex flex-col bg-white h-[350px] w-full sm:w-[90%] shadow-custom-card border border-solid border-gray-200 rounded-lg"
+                className="flex flex-col bg-white h-[350px] w-full sm:w-[90%] shadow-custom-card border border-solid border-gray-200 rounded-lg sm:h-[380px]"
               >
                 <div className="px-4 py-6 sm:p-8 sm:pb-4 flex-grow">
                   <div className="grid items-center justify-center place-items-center w-full text-left">
@@ -363,21 +365,22 @@ const Professionals = () => {
                     <div className="text-left">
                       <p>
                         <span className="text-3xl font-light tracking-tight text-green-700">
-                       {professional?.appointmentSpacing}{" "}
-  {unitTranslations[professional?.appointmentSpacingUnit] || professional?.appointmentSpacingUnit}
+                          {professional?.appointmentSpacing}{" "}
+                          {unitTranslations[professional?.appointmentSpacingUnit] || professional?.appointmentSpacingUnit}
                         </span>
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex px-4 pb-6 sm:px-6">
+                <div className="flex px-4 pb-6 sm:px-6 mt-auto">
                   <button
                     onClick={() => setSelectedProfessional(professional)}
-                    className="flex items-center justify-center w-full px-4 py-2 text-center text-white duration-200 bg-black border-2 border-black rounded-lg hover:bg-transparent hover:border-black hover:text-black focus:outline-none focus-visible:outline-black text-sm focus-visible:ring-black"
+                    className="flex items-center justify-center w-full px-4 py-2 text-center text-white bg-black border-2 border-black rounded-lg hover:bg-transparent hover:border-black hover:text-black focus:outline-none focus-visible:outline-black text-sm focus-visible:ring-black"
+                    style={{ whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: "0.5rem" }}
                   >
                     Reservar horário
-                    <TbCalendarClock className="ml-2 text-base" />
+                    <TbCalendarClock className="text-base flex-shrink-0" />
                   </button>
                 </div>
               </div>

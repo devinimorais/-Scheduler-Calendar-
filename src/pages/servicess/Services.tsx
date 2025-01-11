@@ -9,7 +9,7 @@ import Professionals from "../professionals/Professionals";
 type Professional = {
   id: number;
   name: string;
- 
+  appointmentSpacingUnit: string,
 };
 
 type Service = {
@@ -160,7 +160,7 @@ const Services: React.FC = () => {
 
                 <div
                   key={service?.id}
-                  className="flex flex-col bg-white h-[350px] w-full sm:w-[90%] shadow-custom-card border border-solid border-gray-200 rounded-lg"
+                  className="flex flex-col bg-white h-[410px] w-full sm:w-[90%] shadow-custom-card border border-solid border-gray-200 rounded-lg"
                 >
                   <div className="px-4 py-6 sm:p-8 sm:pb-4 flex-grow">
                     <div className="grid items-center justify-center place-items-center w-full text-left">
@@ -190,7 +190,7 @@ const Services: React.FC = () => {
                           </span>
                           <span className="text-sm font-medium text-black">
                             {" "}
-                            / {service?.duration}  
+                            / {service?.duration} min
                           </span>
                         </p>
                       </div>
