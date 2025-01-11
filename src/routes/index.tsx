@@ -20,7 +20,7 @@ const AppRoutes: React.FC = () => {
         }
       />
       <Route
-        path="/services/:serviceId?"
+        path="/services/:companyId?"
         element={
           <Suspense fallback={<div className="flex justify-center items-center min-h-screen">
             <p className="text-xl font-medium">Carregando...</p>

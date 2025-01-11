@@ -23,7 +23,7 @@ type Service = {
 };
 
 const Services: React.FC = () => {
-  const { serviceId } = useParams<{ serviceId: string }>();
+  const { companyId } = useParams<{ companyId: string }>();
   const [services, setServices] = useState<Service[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>(""); // Controla o texto digitado
   const [searchOpen, setSearchOpen] = useState<boolean>(false); // Controla se o campo de busca está aberto
@@ -36,14 +36,14 @@ const Services: React.FC = () => {
 
   useEffect(() => {
     const fetchServices = async () => {
-      if (!serviceId) {
+      if (!companyId) {
         toast.error("ID do serviço não fornecido.");
         return;
       }
 
       try {
         const { data } = await axios.post("https://api.tzsexpertacademy.com/bypass/", {
-          url: `https://api.tzsexpertacademy.com/services/company/${serviceId}`,
+          url: `https://api.tzsexpertacademy.com/services/company/${companyId}`,
           method: "GET",
         });
         setServices(data.data);
@@ -55,7 +55,7 @@ const Services: React.FC = () => {
     };
 
     fetchServices();
-  }, [serviceId]);
+  }, [companyId]);
 
   // Fecha o campo de busca ao clicar fora
   useEffect(() => {
@@ -73,7 +73,7 @@ const Services: React.FC = () => {
 
   const handleSelectService = (service: Service) => {
     navigate(`/professionals?ticketId=${ticketId}`, {
-      state: { professionals: service.users, serviceName: service.name, serviceId }
+      state: { professionals: service.users, serviceName: service.name, companyId, serviceId: service.id }
     });
   };
 
