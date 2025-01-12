@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -43,7 +43,7 @@ const service: Service = {
 
 const Professionals = () => {
   const location = useLocation();
-  const { professionals, serviceName, serviceId }: { professionals: Professional[], serviceName: string, serviceId: any } =
+  const { professionals, serviceName, serviceId, companyId }: { professionals: Professional[], serviceName: string, serviceId: any,companyId: any } =
     location.state || { professionals: [], serviceName: "" };
 
   const [selectedProfessional, setSelectedProfessional] = useState<Professional | null>(null);
@@ -245,7 +245,7 @@ const Professionals = () => {
   };
 
   const handleSelectService = () => {
-    navigate(`/services/${serviceId}?ticketId=${ticketId}`,);
+    navigate(`/services/${companyId}?ticketId=${ticketId}`,);
   };
 
   const unitTranslations: { [key: string]: string } = {
@@ -283,7 +283,7 @@ const Professionals = () => {
           <div className="flex items-center  flex-col  w-full">
             <div className="  flex w-full justify-between">
               <div className="  flex w-full flex-start flex-col">
-                <h1 className="text-4xl font-bold text-black">{serviceName}</h1>
+                <h1 className="text-3xl font-bold text-black">{serviceName}</h1>
                 <span className="text-lg font-normal text-gray-900">Serviço Selecionado</span>
               </div>
               <div className="w-[80px] h-[80px] overflow-hidden p-1 flex justify-center items-center">
@@ -293,15 +293,31 @@ const Professionals = () => {
             <div className="h-2 border border-solid w-full border-l-0 border-r-0 border-b-0 border-gray-200" />
 
             <div className="w-full flex justify-between items-center flex-wrap flex-col sm:flex-row gap-2 sm:gap-2">
-              <ul className="flex gap-4 ">
-                <li className="border-2 border-none hover:border-solid border-t-0 border-r-0 border-l-0 hover:font-bold" >
-                  <button onClick={handleSelectService}>
-
+            <ul className="flex gap-2 sm:gap-4 flex-wrap">
+                <li
+                  className={` border-solid border-t-0 border-r-0 border-l-0 cursor-pointer ${
+                    location.pathname.includes("/services") ? "underline font-bold" : ""
+                  }`}
+                >
+                  <Link to={`/services/${companyId}?ticketId=${ticketId}`} className="text-black ">
                     Serviços
-                  </button>
+                  </Link>
                 </li>
-                <li className="border-2 border-solid border-t-0 border-r-0 border-l-0 font-bold">
-                  Profissionais
+                <li
+                  className={`cursor-not-allowed ${
+                    location.pathname.includes("/professionals") ? "underline font-bold" : ""
+                  }`}
+                >
+                  <span>Profissionais</span>
+                </li>
+                <li
+                  className={`border-2 cursor-pointer ${
+                    location.pathname.includes("/your-appointments") ? "underline font-bold" : ""
+                  }`}
+                >
+                  <Link to={`/your-appointments/${companyId}?ticketId=${ticketId}`} className="text-black">
+                    Agendamentos
+                  </Link>
                 </li>
               </ul>
               <div className="relative w-[300px]">

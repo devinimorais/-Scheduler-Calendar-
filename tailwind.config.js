@@ -14,6 +14,7 @@ export default {
       },
       boxShadow: {
         'custom-card': '8px 8px 0 #000;', 
+        
       },
     },
   },

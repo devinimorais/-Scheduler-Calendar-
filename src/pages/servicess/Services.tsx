@@ -6,6 +6,8 @@ import axios from "axios";
 import { TbArrowBigRightLine } from "react-icons/tb";
 import errorImage from '../../assets/img/error-404.jpg';
 import Professionals from "../professionals/Professionals";
+import { Link } from "react-router-dom";
+
 type Professional = {
   id: number;
   name: string;
@@ -101,23 +103,35 @@ const Services: React.FC = () => {
         <div className=" bg-white  shadow-custom-card border border-solid border-black rounded-lg relative p-4">
           <div className="flex items-center  flex-col  w-full">
             <div className="  flex w-full flex-start flex-col">
-              <h1 className="text-4xl font-bold text-black">Escolha um serviço</h1>
+              <h1 className="text-3xl font-bold text-black">Escolha um serviço</h1>
               <span className="text-lg font-normal text-gray-900">Bem-vindo!</span>
 
             </div>
             <div className="h-2 border border-solid w-full border-l-0 border-r-0 border-b-0 border-gray-200" />
 
             <div className="w-full flex justify-between items-center flex-wrap flex-col sm:flex-row gap-2 sm:gap-2">
-              <ul className="flex gap-4">
-                <li className="border-2 border-solid border-t-0 border-r-0 border-l-0 font-bold cursor-pointer">
-                  Serviços
+              <ul className="flex gap-2 sm:gap-4 flex-wrap">
+                <li
+                  className={` border-solid border-t-0 border-r-0 border-l-0 cursor-pointer ${location.pathname.includes("/services") ? "underline font-bold" : ""
+                    }`}
+                >
+                  <Link to={`/services/${companyId}?ticketId=${ticketId}`} className="text-black ">
+                    Serviços
+                  </Link>
                 </li>
-                <li className="cursor-not-allowed">
-                  <span>
-                    Profissionais
-                  </span>
-                  {/* <CgProfile /> */}
-
+                <li
+                  className={`cursor-not-allowed ${location.pathname.includes("/professionals") ? "underline font-bold" : ""
+                    }`}
+                >
+                  <span>Profissionais</span>
+                </li>
+                <li
+                  className={`border-2 cursor-pointer ${location.pathname.includes("/your-appointments") ? "underline font-bold" : ""
+                    }`}
+                >
+                  <Link to={`/your-appointments/${companyId}?ticketId=${ticketId}`} className="text-black">
+                    Agendamentos
+                  </Link>
                 </li>
               </ul>
               <div className="relative w-[300px]">

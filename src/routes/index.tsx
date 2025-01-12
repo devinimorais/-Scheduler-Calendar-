@@ -5,20 +5,11 @@ const LazyNotFound = React.lazy(() => import("../pages/not-found/NotFound"));
 const LazyServices = React.lazy(() => import("../pages/servicess/Services"));
 const LazyProfessionals = React.lazy(() => import("../pages/professionals/Professionals"));
 const LazyBookTime = React.lazy(() => import("../pages/BookTimes/Book times"));
+const LazyYourAppointments = React.lazy(() => import("../pages/appointments/YourAppointments"));
 
 const AppRoutes: React.FC = () => {
   return (
     <Routes>
-      <Route
-        path="*"
-        element={
-          <Suspense fallback={<div className="flex justify-center items-center min-h-screen">
-            <p className="text-xl font-medium">Carregando...</p>
-          </div>}>
-            <LazyNotFound />
-          </Suspense>
-        }
-      />
       <Route
         path="/services/:companyId?"
         element={
@@ -49,7 +40,26 @@ const AppRoutes: React.FC = () => {
           </Suspense>
         }
       />
-
+      <Route
+        path="/your-appointments/:companyId?"
+        element={
+          <Suspense fallback={<div className="flex justify-center items-center min-h-screen">
+            <p className="text-xl font-medium">Carregando...</p>
+          </div>}>
+            <LazyYourAppointments />
+          </Suspense>
+        }
+      />
+      <Route
+        path="*"
+        element={
+          <Suspense fallback={<div className="flex justify-center items-center min-h-screen">
+            <p className="text-xl font-medium">Carregando...</p>
+          </div>}>
+            <LazyNotFound />
+          </Suspense>
+        }
+      />
     </Routes>
   );
 };
