@@ -115,11 +115,11 @@ const YourAppointments: React.FC = () => {
                 Confira os seus agendamentos
               </span>
             </div>
-            <div className="h-2 border border-solid w-full border-l-0 border-r-0 border-b-0 border-gray-200 mt-4" />
-            <div className="w-full flex justify-center items-center flex-wrap gap-4 ">
+            <div className="h-2 border border-solid w-full border-l-0 border-r-0 border-b-0 border-gray-200 " />
+            <div className="w-full flex justify-between items-center flex-wrap gap-4 ">
               <ul className="flex gap-2 sm:gap-4 flex-wrap">
                 <li
-                  className={` border-solid border-t-0 border-r-0 border-l-0 cursor-pointer ${
+                  className={`border-solid border-t-0 border-r-0 border-l-0 cursor-pointer ${
                     location.pathname.includes("/services") ? "underline font-bold" : ""
                   }`}
                 >
@@ -170,7 +170,7 @@ const YourAppointments: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-col s-3 gap-6 mt-8">
           {appointments
             .filter((appointment) =>
               appointment?.service?.name.toLowerCase().includes(searchTerm.toLowerCase())
