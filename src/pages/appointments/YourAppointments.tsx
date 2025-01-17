@@ -3,15 +3,17 @@ import { Link, useNavigate, useParams, useSearchParams, useLocation } from "reac
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import { MdCancel } from "react-icons/md"; 
+import { MdCancel } from "react-icons/md";
 
 
 type Appointment = {
   id: number;
   scheduledDate: string;
   status: string;
+  description: string;
   service: {
     name: string;
+    
   };
   user: {
     name: string;
@@ -60,7 +62,7 @@ const YourAppointments: React.FC = () => {
   const cancelAppointment = async (appointmentId: number) => {
     try {
       await axios.post("https://api.tzsexpertacademy.com/bypass/", {
-        url: `https://api.tzsexpertacademy.com/appointments/${appointmentId}`,
+        url: `https://api.tzsexpertacademy.com/appointments/cancell/${appointmentId}`,
         method: "PATCH",
         body: {
           ticketId: +ticketId!,
@@ -119,25 +121,22 @@ const YourAppointments: React.FC = () => {
             <div className="w-full flex justify-between items-center flex-wrap gap-4 ">
               <ul className="flex gap-2 sm:gap-4 flex-wrap">
                 <li
-                  className={`border-solid border-t-0 border-r-0 border-l-0 cursor-pointer ${
-                    location.pathname.includes("/services") ? "underline font-bold" : ""
-                  }`}
+                  className={`border-solid border-t-0 border-r-0 border-l-0 cursor-pointer ${location.pathname.includes("/services") ? "underline font-bold" : ""
+                    }`}
                 >
                   <Link to={`/services/${companyId}?ticketId=${ticketId}`} className="text-black ">
                     Serviços
                   </Link>
                 </li>
                 <li
-                  className={`cursor-not-allowed ${
-                    location.pathname.includes("/professionals") ? "underline font-bold" : ""
-                  }`}
+                  className={`cursor-not-allowed ${location.pathname.includes("/professionals") ? "underline font-bold" : ""
+                    }`}
                 >
                   <span>Profissionais</span>
                 </li>
                 <li
-                  className={`border-2 cursor-pointer ${
-                    location.pathname.includes("/your-appointments") ? "underline font-bold" : ""
-                  }`}
+                  className={`border-2 cursor-pointer ${location.pathname.includes("/your-appointments") ? "underline font-bold" : ""
+                    }`}
                 >
                   <Link to={`/your-appointments/${companyId}?ticketId=${ticketId}`} className="text-black">
                     Agendamentos
@@ -172,16 +171,16 @@ const YourAppointments: React.FC = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-col s-3 gap-6 mt-8">
           {appointments
-            .filter((appointment) =>
-              appointment?.service?.name.toLowerCase().includes(searchTerm.toLowerCase())
-            )
+            .filter((appointment)  =>
+              appointment?.service?.name.toLowerCase().includes(searchTerm.toLowerCase()) || appointment?.description.toLowerCase().includes(searchTerm.toLowerCase())
+            ) 
             .map((appointment) => (
               <div
                 key={appointment?.id}
                 className="flex flex-col bg-white h-auto w-full sm:w-[90%] shadow-custom-card border border-solid border-gray-200 rounded-lg p-4"
               >
                 <div className="flex items-center justify-center w-24 h-24 text-white bg-black rounded-full mx-auto mb-4 text-2xl">
-                  {appointment?.service?.name
+                  {(appointment?.service?.name ?? appointment?.description )
                     ?.split(" ")
                     .map((word) => word.charAt(0))
                     .join("")
@@ -191,7 +190,7 @@ const YourAppointments: React.FC = () => {
 
                 <div className="flex flex-col items-center text-center mb-4">
                   <h2 className="text-lg sm:text-xl font-semibold tracking-tight text-black">
-                    {appointment?.service?.name}
+                    {appointment?.service?.name ?? appointment?.description} 
                   </h2>
                   <p className="text-sm sm:text-lg text-gray-500">
                     Profissional: {appointment?.user?.name}
@@ -212,11 +211,10 @@ const YourAppointments: React.FC = () => {
                   <button
                     onClick={() => cancelAppointment(appointment?.id)}
                     disabled={appointment?.status === "cancelled"}
-                    className={`flex items-center justify-center w-full px-4 py-2 text-white font-medium text-sm sm:text-base rounded-md transition duration-200 ${
-                      appointment?.status === "cancelled"
+                    className={`flex items-center justify-center w-full px-4 py-2 text-white font-medium text-sm sm:text-base rounded-md transition duration-200 ${appointment?.status === "cancelled"
                         ? "bg-gray-400 cursor-not-allowed"
                         : "bg-red-500 hover:bg-red-600"
-                    }`}
+                      }`}
                   >
                     Cancelar
                     <MdCancel className="ml-2 text-base" />
